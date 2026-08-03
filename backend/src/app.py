@@ -4,6 +4,8 @@ from src.config import Config
 from src.extensions import api, db, jwt, ma, migrate
 
 from .modules.auth.routes import auth_bp
+import src.modules.auth.models
+import src.modules.jobs.models
 
 
 def create_app() -> Flask:
