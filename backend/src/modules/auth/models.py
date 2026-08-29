@@ -1,12 +1,15 @@
 import enum
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, Enum, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from src.extensions import BaseModel, db
+from src.extensions import BaseModel
+from src.modules.auth.enums import UserRole
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from src.modules.auth.enums import UserRole
+if TYPE_CHECKING:
+    from src.modules.jobs.models import Application, JobPost, Resume
 
 
 class User(BaseModel):
@@ -26,7 +29,9 @@ class User(BaseModel):
 
     full_name: Mapped[str] = mapped_column(String(100), nullable=False)
 
-    role: Mapped[UserRole] = mapped_column(Enum(UserRole), nullable=False, default=UserRole.SEEKER)
+    role: Mapped[UserRole] = mapped_column(
+        Enum(UserRole), nullable=False, default=UserRole.SEEKER
+    )
 
     phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
 
@@ -39,12 +44,14 @@ class User(BaseModel):
         DateTime, server_default=func.now(), onupdate=func.now()
     )
 
-    resumes: Mapped[list["Resume"]] = relationship("Resume", back_populates="user")
+    resumes: Mapped[list["Resume"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
     job_posts: Mapped[list["JobPost"]] = relationship(
-        "JobPost", back_populates="employer"
+        back_populates="employer", cascade="all, delete-orphan"
     )
     applications: Mapped[list["Application"]] = relationship(
-        "Application", back_populates="candidate"
+        back_populates="candidate", cascade="all, delete-orphan"
     )
 
     def set_password(self, password: str):
@@ -58,6 +65,7 @@ class User(BaseModel):
         Kiểm tra mật khẩu người dùng nhập có khớp với hash trong DB không
         """
         return check_password_hash(self.password_hash, password)
+
 
 class TokenBlocklist(BaseModel):
     __tablename__ = "token_blocklist"

@@ -4,8 +4,11 @@ from typing import TYPE_CHECKING
 from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.extensions import BaseModel
+from src.modules.auth.models import User
 from src.modules.jobs.enums import ApplicationStatus, JobType
 
+if TYPE_CHECKING:
+    pass
 
 
 class Resume(BaseModel):
@@ -15,18 +18,23 @@ class Resume(BaseModel):
     user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
-    title: Mapped[str] = mapped_column(String(150), nullable=False)  # Ví dụ: CV Python Developer
-    file_path: Mapped[str] = mapped_column(String(255), nullable=False)  # Đường dẫn tới file PDF CV
-    parsed_text: Mapped[str | None] = mapped_column(Text, nullable=True)  # Nội dung trích xuất từ CV để AI phân tích
+    title: Mapped[str] = mapped_column(String(150), nullable=False)
+
+    file_path: Mapped[str] = mapped_column(
+        String(255), nullable=False
+    )  # Đường dẫn tới file PDF CV
+    parsed_text: Mapped[str | None] = mapped_column(
+        Text, nullable=True
+    )  # Nội dung trích xuất từ CV để AI phân tích
 
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), onupdate=func.now()
     )
 
-    user: Mapped["User"] = relationship("User", back_populates="resumes")
+    user: Mapped["User"] = relationship(back_populates="resumes")
     applications: Mapped[list["Application"]] = relationship(
-        "Application", back_populates="resume", cascade="all, delete-orphan"
+        back_populates="resume", cascade="all, delete-orphan"
     )
 
 
@@ -51,9 +59,9 @@ class JobPost(BaseModel):
         DateTime, server_default=func.now(), onupdate=func.now()
     )
 
-    employer: Mapped["User"] = relationship("User", back_populates="job_posts")
+    employer: Mapped["User"] = relationship(back_populates="job_posts")
     applications: Mapped[list["Application"]] = relationship(
-        "Application", back_populates="job_post", cascade="all, delete-orphan"
+        back_populates="job_post", cascade="all, delete-orphan"
     )
 
 
@@ -71,9 +79,7 @@ class Application(BaseModel):
         Integer, ForeignKey("resumes.id", ondelete="CASCADE"), nullable=False
     )
     cover_letter: Mapped[str | None] = mapped_column(Text, nullable=True)
-    match_score: Mapped[float | None] = mapped_column(
-        nullable=True
-    )
+    match_score: Mapped[float | None] = mapped_column(nullable=True)
     status: Mapped[ApplicationStatus] = mapped_column(
         Enum(ApplicationStatus), nullable=False, default=ApplicationStatus.PENDING
     )
@@ -83,6 +89,6 @@ class Application(BaseModel):
         DateTime, server_default=func.now(), onupdate=func.now()
     )
 
-    candidate: Mapped["User"] = relationship("User", back_populates="applications")
-    job_post: Mapped["JobPost"] = relationship("JobPost", back_populates="applications")
-    resume: Mapped["Resume"] = relationship("Resume", back_populates="applications")
+    candidate: Mapped["User"] = relationship(back_populates="applications")
+    job_post: Mapped["JobPost"] = relationship(back_populates="applications")
+    resume: Mapped["Resume"] = relationship(back_populates="applications")
