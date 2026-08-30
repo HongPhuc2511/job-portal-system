@@ -2,7 +2,6 @@ import os
 
 from dotenv import load_dotenv
 
-# Load các biến từ file .env
 load_dotenv()
 
 

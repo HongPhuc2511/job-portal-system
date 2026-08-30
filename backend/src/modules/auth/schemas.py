@@ -7,7 +7,8 @@ class RegisterRequest(Schema):
     full_name = fields.String(required=True, validate=validate.Length(min=2, max=100))
     role = fields.String(validate=validate.OneOf(["seeker", "employer"]))
     phone = fields.String()
-
+    company_name = fields.String()
+    company_website = fields.String()
 
 class LoginRequest(Schema):
     email = fields.Email(required=True)
