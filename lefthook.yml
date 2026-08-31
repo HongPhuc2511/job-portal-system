@@ -1,0 +1,22 @@
+# lefthook.yml — Git hooks cho toàn monorepo (job-portal-system)
+# Mọi dev tự chạy lại khi `bun install` / `npm install` nhờ script "prepare" trong frontend/package.json.
+#
+# Lưu ý: `useSortedClasses` (sort tailwind) là unsafe fix nên các lệnh đều dùng `--unsafe`.
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: biome-check-frontend
+      root: frontend/
+      # Auto-fix format + lint rồi stage lại những file vừa được sửa.
+      # Nếu còn lỗi không tự sửa được, biome trả exit code khác 0 -> chặn commit.
+      run: ./node_modules/.bin/biome check --write --unsafe . && git add -u .
+
+pre-push:
+  jobs:
+    - name: biome-check-frontend
+      root: frontend/
+      # Bắt buộc chạy biome check --write trước khi push:
+      #  - Đã format xong -> passthrough.
+      #  - Còn lỗi (không tự fix được) -> exit code khác 0 -> chặn push.
+      run: ./node_modules/.bin/biome check --write --unsafe . && (git diff --quiet && echo "✅ Biome OK" || echo "⚠️ Biome vừa tự format vài file trong working tree — nhớ commit chúng trước khi push.")

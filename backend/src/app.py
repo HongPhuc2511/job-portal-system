@@ -12,7 +12,11 @@ from .modules.jobs.routes import jobs_bp
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
+    CORS(
+        app,
+        resources={r"/api/*": {"origins": "http://localhost:5173"}},
+        supports_credentials=True,
+    )
     app.config.from_object(Config)
 
     app.json.ensure_ascii = False  # type: ignore
