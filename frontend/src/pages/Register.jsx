@@ -69,7 +69,6 @@ export default function Register() {
           </select>
         </label>
 
-        {/* ✅ MỚI: chỉ hiện khi chọn nhà tuyển dụng */}
         {form.role === "employer" && (
           <>
             <input

@@ -1,5 +1,11 @@
 from marshmallow import Schema, fields, validate
 
+class UserResponse(Schema):
+    id = fields.Integer()
+    email = fields.Email()
+    full_name = fields.String()
+    role = fields.String()
+
 
 class RegisterRequest(Schema):
     email = fields.Email(required=True)
@@ -19,3 +25,4 @@ class TokenResponse(Schema):
     access_token = fields.String(required=True)
     refresh_token = fields.String(required=True)
     token_type = fields.String(required=True, validate=validate.Equal("Bearer"))
+    user = fields.Nested(UserResponse)
