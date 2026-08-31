@@ -19,4 +19,6 @@ pre-push:
       # Bắt buộc chạy biome check --write trước khi push:
       #  - Đã format xong -> passthrough.
       #  - Còn lỗi (không tự fix được) -> exit code khác 0 -> chặn push.
-      run: ./node_modules/.bin/biome check --write --unsafe . && (git diff --quiet && echo "✅ Biome OK" || echo "⚠️ Biome vừa tự format vài file trong working tree — nhớ commit chúng trước khi push.")
+      # Lưu ý: không dùng subshell `( ... )`/chuỗi lồng nhau — bị lỗi cú pháp
+      # khi lefthook chạy qua `sh -c` trên Windows (unexpected end of file).
+      run: ./node_modules/.bin/biome check --write --unsafe .
