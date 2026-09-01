@@ -22,10 +22,10 @@ class Resume(BaseModel):
 
     file_path: Mapped[str] = mapped_column(
         String(255), nullable=False
-    )  # Đường dẫn tới file PDF CV
+    )
     parsed_text: Mapped[str | None] = mapped_column(
         Text, nullable=True
-    )  # Nội dung trích xuất từ CV để AI phân tích
+    )
 
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
