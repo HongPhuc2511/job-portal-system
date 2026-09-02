@@ -85,4 +85,4 @@ def list_resumes():
     """Ứng viên xem CV của chính mình"""
     user_id = get_jwt_identity()
     stmt=select(Resume).where(Resume.user_id == user_id).order_by(Resume.created_at.desc())
-    return db.session.scalar(stmt).all()
+    return db.session.scalars(stmt).all()
