@@ -44,10 +44,19 @@ export function Header() {
             </>
           ) : (
             <>
-              <Button variant="outline" size="sm" render={<Link to="/login" />}>
+              <Button
+                variant="outline"
+                size="sm"
+                render={<Link to="/login" />}
+                nativeButton={false}
+              >
                 Đăng nhập
               </Button>
-              <Button size="sm" render={<Link to="/register" />}>
+              <Button
+                size="sm"
+                render={<Link to="/register" />}
+                nativeButton={false}
+              >
                 Đăng ký
               </Button>
             </>
