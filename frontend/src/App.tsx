@@ -4,7 +4,7 @@ import { AuthProvider } from "@/context/auth-context"
 import { Home } from "@/pages/home"
 import { Login } from "@/pages/login"
 import { Register } from "@/pages/register"
-import Resume from "@/pages/resume"
+import Resumes from "@/pages/resumes"
 
 export function App() {
   return (
@@ -15,7 +15,7 @@ export function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/resume" element={<Resume />} />
+          <Route path="/resume" element={<Resumes />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
