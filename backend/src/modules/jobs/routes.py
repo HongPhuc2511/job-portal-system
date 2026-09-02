@@ -22,9 +22,7 @@ jobs_bp = Blueprint(
 @jobs_bp.route("/latest", methods=["GET"])
 @jobs_bp.response(200, description="Lấy danh sách việc làm mới nhất")
 def get_latest_jobs():
-    """
-    Lấy 10 bài tuyển dụng mới nhất
-    """
+    """Lấy 10 bài tuyển dụng mới nhất"""
     stmt = (
         select(JobPost)
         .options(joinedload(JobPost.employer))
@@ -64,9 +62,7 @@ resumes_bp = Blueprint(
 @jwt_required()
 @resumes_bp.response(201, schema=ResumeResponse, description="Tao CV thanh cong")
 def create_resume():
-    """
-    Ung vien tao CV moi (upload file PDF)
-    """
+    """Ứng vien tạo CV mới (upload file PDF)"""
     user_id = get_jwt_identity()
     file = request.files["file"]
     title = request.form.get("title")
@@ -81,3 +77,12 @@ def create_resume():
     db.session.commit()
 
     return new_resume
+
+@resumes_bp.route("", methods=["GET"])
+@jwt_required()
+@resumes_bp.response(200, schema=ResumeResponse(many=True), description="Danh sach CV cua ung vien")
+def list_resumes():
+    """Ứng viên xem CV của chính mình"""
+    user_id = get_jwt_identity()
+    stmt=select(Resume).where(Resume.user_id == user_id).order_by(Resume.created_at.desc())
+    return db.session.scalar(stmt).all()

@@ -19,9 +19,7 @@ auth_bp = Blueprint(
 @auth_bp.arguments(RegisterRequest)
 @auth_bp.response(201, description="Đăng ký thành công")
 def register(data):
-    """
-    Đăng ký người dùng mới
-    """
+    """Đăng ký người dùng mới"""
     existing_user = db.session.scalars(
         select(User).where(User.email == data["email"])
     ).one_or_none()
@@ -52,9 +50,7 @@ def register(data):
 @auth_bp.arguments(LoginRequest)
 @auth_bp.response(200, schema=TokenResponse, description="Đăng nhập thành công")
 def login(data):
-    """
-    Đăng nhập người dùng
-    """
+    """Đăng nhập người dùng"""
     user = db.session.scalars(
         select(User).where(User.email == data["email"])
     ).one_or_none()
@@ -86,9 +82,7 @@ def login(data):
 @jwt_required()
 @auth_bp.response(200, description="Đăng xuất thành công")
 def logout():
-    """
-    Đăng xuất
-    """
+    """Đăng xuất"""
     jti = get_jwt()["jti"]
     db.session.add(TokenBlocklist(jti=jti))
     db.session.commit()
