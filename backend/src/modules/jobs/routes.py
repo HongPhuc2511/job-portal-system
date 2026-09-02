@@ -1,9 +1,15 @@
+import os
+import uuid
+
+from flask import request, current_app
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_smorest import Blueprint
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from src.extensions import db
 
-from .models import JobPost
+from .models import JobPost,Resume
+from .schemas import ResumeResponse
 
 jobs_bp = Blueprint(
     "jobs",
@@ -29,7 +35,6 @@ def get_latest_jobs():
 
     result = []
     for job in jobs:
-        # Ưu tiên lấy company_name của nhà tuyển dụng, nếu không có thì lấy full_name
         company_name = (
             job.employer.company_name
             if job.employer and job.employer.company_name
@@ -46,3 +51,33 @@ def get_latest_jobs():
         })
 
     return result, 200
+
+resumes_bp = Blueprint(
+    "resumes",
+    "resumes",
+    url_prefix="/api/resumes",
+    description="Quan ly CV cua ung vien",
+)
+
+
+@resumes_bp.route("", methods=["POST"])
+@jwt_required()
+@resumes_bp.response(201, schema=ResumeResponse, description="Tao CV thanh cong")
+def create_resume():
+    """
+    Ung vien tao CV moi (upload file PDF)
+    """
+    user_id = get_jwt_identity()
+    file = request.files["file"]
+    title = request.form.get("title")
+
+    filename = f"{uuid.uuid4().hex}_{file.filename}"
+    upload_folder = current_app.config["UPLOAD_FOLDER"]
+    os.makedirs(upload_folder, exist_ok=True)
+    file.save(os.path.join(upload_folder, filename))
+
+    new_resume = Resume(user_id=user_id, title=title, file_path=filename)
+    db.session.add(new_resume)
+    db.session.commit()
+
+    return new_resume

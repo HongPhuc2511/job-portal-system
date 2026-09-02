@@ -7,7 +7,7 @@ from src.config import Config
 from src.extensions import api_document, db, jwt, ma, migrate
 
 from .modules.auth.routes import auth_bp
-from .modules.jobs.routes import jobs_bp
+from .modules.jobs.routes import jobs_bp,resumes_bp
 
 
 def create_app() -> Flask:
@@ -29,5 +29,6 @@ def create_app() -> Flask:
 
     api_document.register_blueprint(auth_bp)
     api_document.register_blueprint(jobs_bp)
+    api_document.register_blueprint(resumes_bp)
 
     return app
