@@ -12,6 +12,7 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = 3600
     JWT_REFRESH_TOKEN_EXPIRES = 86400
 
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads", "resumes")
 
     API_TITLE = "Job Portal API"
     API_VERSION = "v1"
