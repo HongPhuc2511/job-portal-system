@@ -11,3 +11,7 @@ class ResumeResponse(Schema):
 
 class ResumeUpdateRequest(Schema):
     title = fields.String(required=False)
+
+class ResumeBuilderRequest(Schema):
+    title = fields.String(required=True)
+    content = fields.Dict(required=True)
