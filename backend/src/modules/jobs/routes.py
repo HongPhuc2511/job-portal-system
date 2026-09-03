@@ -1,9 +1,11 @@
 import os
 import uuid
 
-from flask import request, current_app
+from flask import request, current_app, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_smorest import Blueprint
+from flask import send_from_directory
+from flask_sqlalchemy import session
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from src.extensions import db
@@ -86,3 +88,16 @@ def list_resumes():
     user_id = get_jwt_identity()
     stmt=select(Resume).where(Resume.user_id == user_id).order_by(Resume.created_at.desc())
     return db.session.scalars(stmt).all()
+
+@resumes_bp.route("/<int:resume_id>/file", methods=["GET"])
+@jwt_required()
+def get_resume_file(resume_id):
+    """Ứng vin xem File CV của mình"""
+    user_id = get_jwt_identity()
+    resume=db.session.get(Resume, resume_id)
+
+    if not resume or str(resume.user_id) != str(user_id):
+        return jsonify({"message": "Khong tim thay CV"}), 404
+
+    upload_folder = current_app.config["UPLOAD_FOLDER"]
+    return send_from_directory(upload_folder, resume.file_path)
