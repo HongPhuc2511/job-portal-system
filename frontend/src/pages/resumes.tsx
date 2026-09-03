@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
+<<<<<<< HEAD
 import { createResumes, getResumes, viewResumeFile } from "@/api/resume"
+=======
+import { createResumes, deleteResume, getResumes } from "@/api/resume"
+>>>>>>> 5559c10 (feat:thêm chức năng xóa CV bên frontend và sửa lại file resumes bằng tailwind css)
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -42,15 +46,26 @@ export default function Resumes() {
     }
   }
 
+  const handleDelete = async (id: number) => {
+    if (!confirm("Bạn có chắc muốn xoá CV này?")) return
+    try {
+      await deleteResume(id)
+      setMessage("Xoá CV thành công!")
+      loadResumes()
+    } catch (_err) {
+      setMessage("Xoá CV thất bại, thử lại sau")
+    }
+  }
+
   return (
-    <div style={{ maxWidth: 480, margin: "60px auto" }}>
+    <div className="mx-auto max-w-md space-y-6 px-4 py-12">
       <Card>
         <CardHeader>
           <CardTitle>Tạo CV mới</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
+            <div className="space-y-1.5">
               <Label htmlFor="title">Tiêu đề CV</Label>
               <Input
                 id="title"
@@ -59,7 +74,7 @@ export default function Resumes() {
                 placeholder="VD: CV Frontend Developer"
               />
             </div>
-            <div>
+            <div className="space-y-1.5">
               <Label htmlFor="file">File PDF</Label>
               <Input
                 id="file"
@@ -68,18 +83,26 @@ export default function Resumes() {
                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
               />
             </div>
-            {message && <p>{message}</p>}
-            <Button type="submit">Tạo CV</Button>
+            {message && (
+              <p className="text-muted-foreground text-sm">{message}</p>
+            )}
+            <Button type="submit" className="w-full">
+              Tạo CV
+            </Button>
           </form>
         </CardContent>
       </Card>
-      <Card style={{ marginTop: 24 }}>
+
+      <Card>
         <CardHeader>
           <CardTitle>CV của tôi</CardTitle>
         </CardHeader>
-        <CardContent>
-          {resumes.length === 0 && <p>Chưa có CV nào.</p>}
+        <CardContent className="divide-y">
+          {resumes.length === 0 && (
+            <p className="text-muted-foreground text-sm">Chưa có CV nào.</p>
+          )}
           {resumes.map((r) => (
+<<<<<<< HEAD
             <div
               key={r.id}
               style={{
@@ -101,6 +124,22 @@ export default function Resumes() {
               >
                 Xem
               </Button>
+=======
+            <div key={r.id} className="flex items-center justify-between py-3">
+              <span className="font-medium text-sm">{r.title}</span>
+              <div className="flex items-center gap-3">
+                <span className="text-muted-foreground text-xs">
+                  {new Date(r.created_at).toLocaleDateString("vi-VN")}
+                </span>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDelete(r.id)}
+                >
+                  Xoá
+                </Button>
+              </div>
+>>>>>>> 5559c10 (feat:thêm chức năng xóa CV bên frontend và sửa lại file resumes bằng tailwind css)
             </div>
           ))}
         </CardContent>

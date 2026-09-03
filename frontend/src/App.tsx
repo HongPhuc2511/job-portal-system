@@ -2,8 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { Header } from "@/components/header"
 import { AuthProvider } from "@/context/auth-context"
 import { Home } from "@/pages/home"
-import { Login } from "@/pages/login"
-import { Register } from "@/pages/register"
+import Login from "@/pages/login"
+import Register from "@/pages/register"
 import Resumes from "@/pages/resumes"
 
 export function App() {

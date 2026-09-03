@@ -14,6 +14,7 @@ export const getResumes = () => {
   return axiosClient.get("/resumes")
 }
 
+<<<<<<< HEAD
 export const viewResumeFile = async (id: number) => {
   const res = await axiosClient.get(`/resumes/${id}/file`, {
     responseType: "blob",
@@ -22,4 +23,8 @@ export const viewResumeFile = async (id: number) => {
     new Blob([res.data], { type: "application/pdf" })
   )
   window.open(url, "_blank")
+=======
+export const deleteResume = (id: number) => {
+  return axiosClient.delete(`/resumes/${id}`)
+>>>>>>> 5559c10 (feat:thêm chức năng xóa CV bên frontend và sửa lại file resumes bằng tailwind css)
 }

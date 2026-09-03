@@ -115,3 +115,4 @@ def delete_resume(resume_id):
     db.session.delete(resume)
     db.session.commit()
     return {"message":"Xóa CV thành công!"},200
+
