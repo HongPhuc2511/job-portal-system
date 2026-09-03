@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
-import { createResumes, getResumes } from "@/api/resume"
+import { createResumes, getResumes, viewResumeFile } from "@/api/resume"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -94,6 +94,13 @@ export default function Resumes() {
               <span style={{ fontSize: 12, color: "#94a3b8" }}>
                 {new Date(r.created_at).toLocaleDateString("vi-VN")}
               </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => viewResumeFile(r.id)}
+              >
+                Xem
+              </Button>
             </div>
           ))}
         </CardContent>

@@ -13,3 +13,13 @@ export const createResumes = (title: string, file: File) => {
 export const getResumes = () => {
   return axiosClient.get("/resumes")
 }
+
+export const viewResumeFile = async (id: number) => {
+  const res = await axiosClient.get(`/resumes/${id}/file`, {
+    responseType: "blob",
+  })
+  const url = window.URL.createObjectURL(
+    new Blob([res.data], { type: "application/pdf" })
+  )
+  window.open(url, "_blank")
+}
