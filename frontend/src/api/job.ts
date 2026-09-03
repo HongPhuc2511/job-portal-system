@@ -16,5 +16,16 @@ const getLatestJobs = async (): Promise<LatestJobsResponse> => {
   return response.data
 }
 
+export const searchJobs = async (
+  keyword: string
+): Promise<LatestJobsResponse> => {
+  const response = await axiosClient.get("/jobs/search", {
+    params: {
+      q: keyword,
+    },
+  })
+  return response.data
+}
+
 export { getLatestJobs }
 export default getLatestJobs
