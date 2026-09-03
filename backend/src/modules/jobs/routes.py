@@ -69,6 +69,28 @@ def search_jobs():
             )
         )
         
+    stmt = stmt.order_by(JobPost.id.desc())
+    
+    jobs = db.session.scalars(stmt).all()
+    
+    result = []
+    for job in jobs:
+        company_name = (
+            job.employer.company_name
+            if job.employer and job.employer.company_name
+            else (job.employer.full_name if job.employer else "Công ty Tuyển dụng")
+        )
+
+        result.append({
+            "id": job.id,
+            "title": job.title,
+            "company_name": company_name,
+            "location": job.location,
+            "salary": job.salary_range or "Thỏa thuận",
+            "created_at": job.created_at.isoformat() if job.created_at else None,
+        })
+
+    return result, 200
 
 resumes_bp = Blueprint(
     "resumes",
