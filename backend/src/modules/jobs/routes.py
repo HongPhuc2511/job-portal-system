@@ -56,6 +56,12 @@ def get_latest_jobs():
 @jobs_bp.response(200, description="Tìm kiếm tin tuyển dụng theo từ khoá")
 def search_jobs():
     """Ứng viên tìm kiếm việc làm"""
+    # Lấy từ khoá từ query param 'q', nếu không có thì mặc định là chuỗi rỗng
+    keyword = request.args.get("q", default="", type=str).strip()
+    
+    # Khởi tạo câu truy vấn cơ bản, kèm theo thông tin nhà tuyển dụng (tránh lỗi N+1)
+    stmt = select(JobPost).options(joinedload(JobPost.employer))
+    
     
 
 resumes_bp = Blueprint(
