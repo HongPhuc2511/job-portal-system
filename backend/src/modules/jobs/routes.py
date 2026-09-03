@@ -6,7 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_smorest import Blueprint
 from flask import send_from_directory
 from flask_sqlalchemy import session
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from sqlalchemy.orm import joinedload
 from src.extensions import db
 
@@ -51,6 +51,12 @@ def get_latest_jobs():
         })
 
     return result, 200
+
+@jobs_bp.route("/search", methods=["GET"])
+@jobs_bp.response(200, description="Tìm kiếm tin tuyển dụng theo từ khoá")
+def search_jobs():
+    """Ứng viên tìm kiếm việc làm"""
+    
 
 resumes_bp = Blueprint(
     "resumes",
