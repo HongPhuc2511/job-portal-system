@@ -60,7 +60,15 @@ def search_jobs():
     
     stmt = select(JobPost).options(joinedload(JobPost.employer))
     
-    
+    if keyword:
+        search_term = f"%{keyword}%"
+        stmt = stmt.where(
+            or_(
+                JobPost.title.ilike(search_term),
+                JobPost.description.ilike(search_term)
+            )
+        )
+        
 
 resumes_bp = Blueprint(
     "resumes",
