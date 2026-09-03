@@ -10,8 +10,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from src.extensions import db
 
-from .models import JobPost,Resume
-from .schemas import ResumeResponse
+from .models import JobPost, Resume, ResumeType
+from .schemas import ResumeResponse,ResumeBuilderRequest,ResumeUpdateRequest
 
 jobs_bp = Blueprint(
     "jobs",
@@ -101,3 +101,18 @@ def get_resume_file(resume_id):
 
     upload_folder = current_app.config["UPLOAD_FOLDER"]
     return send_from_directory(upload_folder, resume.file_path)
+
+@resumes_bp.route("/builder", methods=["POST"])
+@jwt_required()
+@resumes_bp.arguments(ResumeBuilderRequest)
+@resumes_bp.response(201, schema=ResumeResponse, description="Tao CV bang form thanh cong")
+def create_resume_builder(data):
+    """Ứng viên tạo CV bằng form nhập lieu"""
+    user_id = get_jwt_identity()
+    new_resume = Resume(user_id=user_id,title=data["title"],
+                        resume_type=ResumeType.BUILDER,
+                        content=data["content"],)
+    db.session.add(new_resume)
+    db.session.commit()
+
+    return new_resume
