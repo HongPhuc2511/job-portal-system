@@ -4,7 +4,9 @@ from marshmallow import Schema, fields
 class ResumeResponse(Schema):
     id = fields.Integer()
     title = fields.String()
-    file_path = fields.String()
+    resume_type=fields.String()
+    file_path = fields.String(allow_none=True)
+    content = fields.Dict(allow_none=True)
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
 
