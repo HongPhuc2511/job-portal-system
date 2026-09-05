@@ -1,5 +1,4 @@
 import type * as v from "valibot";
-
 import type PostSchema from "@/schemas/post-schema";
 import axiosClient from "./axiosClient";
 
@@ -9,7 +8,14 @@ export type Job = {
 	company_name?: string;
 	location?: string;
 	salary?: string | number;
+	display_salary?: string;
 	created_at?: string;
+};
+
+export type JobFilterParams = {
+	province_id?: number | null;
+	job_type?: string | null;
+	salary?: number | null;
 };
 
 export type LatestJobsResponse = Job[] | { jobs?: Job[]; data?: Job[] };
