@@ -4,6 +4,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { ThemeProvider } from "@/components/theme-provider.tsx";
+import { Toaster } from "@/components/ui/toast.tsx";
 import App from "./App.tsx";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ createRoot(rootElement).render(
 		<QueryClientProvider client={queryClient}>
 			<ThemeProvider>
 				<App />
+				<Toaster />
 			</ThemeProvider>
 			<ReactQueryDevtools initialIsOpen={false} />
 		</QueryClientProvider>

@@ -49,6 +49,10 @@ export function Header() {
 }
 
 function EmployerTooltip() {
+	const { user } = useAuth();
+
+	if (user?.role !== "employer") return null;
+
 	return (
 		<>
 			<Button
@@ -128,7 +132,7 @@ function UserButton() {
 				{user.role === "seeker" && (
 					<>
 						<DropdownMenuGroup>
-							<DropdownMenuItem render={<Link to="/resume" />}>
+							<DropdownMenuItem render={<Link to="/resumes" />}>
 								<FileUserIcon /> Quản lý CV
 							</DropdownMenuItem>
 						</DropdownMenuGroup>

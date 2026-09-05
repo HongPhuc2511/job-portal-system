@@ -49,12 +49,8 @@ const PostSchema = v.pipe(
 		deadline: v.pipe(
 			v.string("Hạn nộp hồ sơ phải là chuỗi ngày giờ"),
 			v.nonEmpty("Xin vui lòng chọn hạn nộp hồ sơ"),
-			v.check(
-				(input) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?$/.test(input),
-				"Hạn nộp hồ sơ phải đúng định dạng YYYY-MM-DDTHH:mm hoặc YYYY-MM-DDTHH:mm:ss",
-			),
-			// Chuẩn hoá "YYYY-MM-DDTHH:mm" (từ picker lịch + giờ) về ISO-8601 có giây
 			v.transform((input) => (input.length === 16 ? `${input}:00` : input)),
+			v.isoDateTimeSecond("Hạn nộp hồ sơ phải đúng định dạng ngày giờ"),
 			v.check((input) => {
 				const time = new Date(input).getTime();
 				return !Number.isNaN(time) && time > Date.now();

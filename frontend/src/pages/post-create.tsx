@@ -6,20 +6,21 @@ import {
 	useForm,
 } from "@formisch/react";
 import { ChevronLeftIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import type * as v from "valibot";
 import { useDistricts, useProvinces } from "@/api/location";
 import { useCreatePost } from "@/api/post-api";
-import {
-	DatePickerField,
-	InputField,
-	NumberField,
-	SelectField,
-} from "@/components/field";
+import { DatePickerField } from "@/components/field/date-picker-field";
+import { InputField } from "@/components/field/input-field";
+import { NumberField } from "@/components/field/number-field";
+import { SelectField } from "@/components/field/select-field";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FieldGroup } from "@/components/ui/field";
+import { toast } from "@/components/ui/toast";
 import { extractBackendErrors, setFormErrors } from "@/lib/backend-error";
+import { formatLocalDateTime } from "@/lib/datetime";
 import { formatSalary } from "@/lib/salary";
 import PostSchema from "@/schemas/post-schema";
 import {
@@ -30,6 +31,8 @@ import {
 } from "@/types/post";
 
 export default function PostCreatePage() {
+	const navigate = useNavigate();
+
 	const postForm = useForm({
 		schema: PostSchema,
 		initialInput: {
@@ -37,6 +40,9 @@ export default function PostCreatePage() {
 			description: "",
 			head_count: 1,
 			salary_period: "MONTHLY",
+			deadline: formatLocalDateTime(
+				new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+			),
 		},
 	});
 
@@ -68,7 +74,11 @@ export default function PostCreatePage() {
 
 		try {
 			await createPost.mutateAsync(payload);
-			// TODO: toast thông báo thành công + chuyển hướng về trang quản lý bài đăng
+			toast.add({
+				type: "success",
+				title: "Tạo bài đăng tuyển dụng thành công",
+			});
+			navigate("/posts");
 		} catch (rawError) {
 			const error = extractBackendErrors(rawError);
 			setFormErrors(postForm, error);
@@ -317,9 +327,13 @@ export default function PostCreatePage() {
 							type="submit"
 							size="lg"
 							className="w-full"
-							disabled={postForm.isSubmitting}
+							disabled={createPost.isPending || createPost.isSuccess}
 						>
-							{postForm.isSubmitting ? "Đang tạo..." : "Tạo bài đăng"}
+							{createPost.isPending
+								? "Đang tạo..."
+								: createPost.isSuccess
+									? "Đã tạo thành công"
+									: "Tạo bài đăng"}
 						</Button>
 					</div>
 				</div>
