@@ -8,6 +8,8 @@ import Register from "@/pages/register"
 import ResumeBuilder from "@/pages/resume_builder"
 import ResumeDetailPage from "@/pages/resume_detail"
 import Resumes from "@/pages/resumes"
+import ResumeBuilder from "./pages/resume_builder"
+import ResumeDetailPage from "./pages/resume_detail"
 
 export function App() {
   return (

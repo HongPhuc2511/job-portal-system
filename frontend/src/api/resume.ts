@@ -41,4 +41,6 @@ export const updateResume = (id: number, title: string, content?: object) => {
     `/resumes/${id}`,
     content ? { title, content } : { title }
   )
+export const getResumeDetail = (id: number) => {
+  return axiosClient.get(`/resumes/${id}`)
 }
