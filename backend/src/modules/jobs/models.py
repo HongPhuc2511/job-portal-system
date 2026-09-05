@@ -1,7 +1,8 @@
+import enum
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Text, func
+from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Text, func, JSON, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.extensions import BaseModel
 from src.modules.auth.models import User
@@ -10,6 +11,9 @@ from src.modules.jobs.enums import ApplicationStatus, JobType
 if TYPE_CHECKING:
     pass
 
+class ResumeType(str,enum.Enum):
+    UPLOAD = "upload"
+    BUILDER = "builder"
 
 class Resume(BaseModel):
     __tablename__ = "resumes"
@@ -20,9 +24,13 @@ class Resume(BaseModel):
     )
     title: Mapped[str] = mapped_column(String(150), nullable=False)
 
-    file_path: Mapped[str] = mapped_column(
-        String(255), nullable=False
+    resume_type: Mapped[ResumeType] = mapped_column(
+        SAEnum(ResumeType), nullable=False, default=ResumeType.UPLOAD
     )
+
+    file_path: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    content: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+
     parsed_text: Mapped[str | None] = mapped_column(
         Text, nullable=True
     )

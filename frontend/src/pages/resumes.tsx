@@ -15,7 +15,7 @@ interface Resume {
   id: number
   title: string
   resume_type: string
-  file_path: string
+  file_path: string | null
   created_at: string
 }
 
@@ -91,6 +91,14 @@ export default function Resumes() {
             )}
             <Button type="submit" className="w-full">
               Tạo CV
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full"
+              render={<Link to="/resumes/builder" />}
+              nativeButton={false}
+            >
+              Tạo CV theo mẫu (nhập thông tin)
             </Button>
           </form>
         </CardContent>
