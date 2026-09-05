@@ -99,6 +99,9 @@ def get_resume_file(resume_id):
     if not resume or str(resume.user_id) != str(user_id):
         return jsonify({"message": "Khong tim thay CV"}), 404
 
+    if not resume.file_path:
+        return jsonify({"message": "CV nay khong co file de xem"}), 400
+
     upload_folder = current_app.config["UPLOAD_FOLDER"]
     return send_from_directory(upload_folder, resume.file_path)
 

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { createResumes, getResumes, viewResumeFile } from "@/api/resume"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,7 +9,8 @@ import { Label } from "@/components/ui/label"
 interface Resume {
   id: number
   title: string
-  file_path: string
+  resume_type: string
+  file_path: string | null
   created_at: string
 }
 
@@ -70,6 +72,14 @@ export default function Resumes() {
             </div>
             {message && <p>{message}</p>}
             <Button type="submit">Tạo CV</Button>
+            <Button
+              variant="outline"
+              className="w-full"
+              render={<Link to="/resumes/builder" />}
+              nativeButton={false}
+            >
+              Tạo CV theo mẫu (nhập thông tin)
+            </Button>
           </form>
         </CardContent>
       </Card>
@@ -94,13 +104,15 @@ export default function Resumes() {
               <span style={{ fontSize: 12, color: "#94a3b8" }}>
                 {new Date(r.created_at).toLocaleDateString("vi-VN")}
               </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => viewResumeFile(r.id)}
-              >
-                Xem
-              </Button>
+              {r.resume_type === "upload" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewResumeFile(r.id)}
+                >
+                  Xem
+                </Button>
+              )}
             </div>
           ))}
         </CardContent>
