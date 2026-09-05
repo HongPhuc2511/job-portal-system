@@ -1,10 +1,12 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { Header } from "@/components/header"
+import ProtectedRoute from "@/components/protected-route"
 import { AuthProvider } from "@/context/auth-context"
 import { Home } from "@/pages/home"
 import { Login } from "@/pages/login"
 import { Register } from "@/pages/register"
 import Resumes from "@/pages/resumes"
+import ResumeBuilder from "./pages/resume_builder"
 
 export function App() {
   return (
@@ -15,7 +17,15 @@ export function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/resume" element={<Resumes />} />
+          <Route path="/resumes" element={<Resumes />} />
+          <Route
+            path="/resumes/builder"
+            element={
+              <ProtectedRoute>
+                <ResumeBuilder />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

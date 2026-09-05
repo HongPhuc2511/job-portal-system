@@ -23,3 +23,7 @@ export const viewResumeFile = async (id: number) => {
   )
   window.open(url, "_blank")
 }
+
+export const createResumeBuilder = (title: string, content: object) => {
+  return axiosClient.post("/resumes/builder", { title, content })
+}
