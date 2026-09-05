@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields, validate
 
+
 class UserResponse(Schema):
     id = fields.Integer()
     email = fields.Email()
@@ -15,6 +16,7 @@ class RegisterRequest(Schema):
     phone = fields.String()
     company_name = fields.String()
     company_website = fields.String()
+
 
 class LoginRequest(Schema):
     email = fields.Email(required=True)
