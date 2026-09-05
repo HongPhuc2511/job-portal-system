@@ -162,6 +162,9 @@ def update_resume(data,resume_id):
     if "title" in data:
         resume.title = data["title"]
 
+    if "content" in data:
+        resume.content = data["content"]
+
     db.session.commit()
     return resume
 

@@ -4,6 +4,7 @@ import {
   createResumes,
   deleteResume,
   getResumes,
+  updateResume,
   viewResumeFile,
 } from "@/api/resume"
 import { Button } from "@/components/ui/button"
@@ -24,6 +25,8 @@ export default function Resumes() {
   const [file, setFile] = useState<File | null>(null)
   const [message, setMessage] = useState("")
   const [resumes, setResumes] = useState<Resume[]>([])
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const [editTitle, setEditTitle] = useState("")
 
   const loadResumes = useCallback(async () => {
     const res = await getResumes()
@@ -57,6 +60,28 @@ export default function Resumes() {
       loadResumes()
     } catch (_err) {
       setMessage("Xoá CV thất bại, thử lại sau")
+    }
+  }
+
+  const startEdit = (r: Resume) => {
+    setEditingId(r.id)
+    setEditTitle(r.title)
+  }
+
+  const cancelEdit = () => {
+    setEditingId(null)
+    setEditTitle("")
+  }
+
+  const saveEdit = async (id: number) => {
+    if (!editTitle.trim()) return
+    try {
+      await updateResume(id, editTitle)
+      setMessage("Cập nhật CV thành công!")
+      setEditingId(null)
+      loadResumes()
+    } catch (_err) {
+      setMessage("Cập nhật thất bại, thử lại sau")
     }
   }
 
@@ -113,37 +138,80 @@ export default function Resumes() {
             <p className="text-muted-foreground text-sm">Chưa có CV nào.</p>
           )}
           {resumes.map((r) => (
-            <div key={r.id} className="flex items-center justify-between py-3">
-              <span className="font-medium text-sm">{r.title}</span>
-              <div className="flex items-center gap-3">
-                <span className="text-muted-foreground text-xs">
-                  {new Date(r.created_at).toLocaleDateString("vi-VN")}
-                </span>
-                {r.resume_type === "upload" ? (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => viewResumeFile(r.id)}
-                  >
-                    Xem
-                  </Button>
+            <div
+              key={r.id}
+              className="flex items-center justify-between gap-3 py-3"
+            >
+              {editingId === r.id ? (
+                <Input
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="h-8"
+                />
+              ) : (
+                <span className="font-medium text-sm">{r.title}</span>
+              )}
+
+              <div className="flex shrink-0 items-center gap-2">
+                {editingId === r.id ? (
+                  <>
+                    <Button size="sm" onClick={() => saveEdit(r.id)}>
+                      Lưu
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={cancelEdit}>
+                      Huỷ
+                    </Button>
+                  </>
                 ) : (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    render={<Link to={`/resumes/${r.id}`} />}
-                    nativeButton={false}
-                  >
-                    Xem
-                  </Button>
+                  <>
+                    <span className="text-muted-foreground text-xs">
+                      {new Date(r.created_at).toLocaleDateString("vi-VN")}
+                    </span>
+                    {r.resume_type === "upload" ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => viewResumeFile(r.id)}
+                      >
+                        Xem
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        render={<Link to={`/resumes/${r.id}`} />}
+                        nativeButton={false}
+                      >
+                        Xem
+                      </Button>
+                    )}
+                    {r.resume_type === "upload" ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => startEdit(r)}
+                      >
+                        Sửa tiêu đề
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        render={<Link to={`/resumes/${r.id}/edit`} />}
+                        nativeButton={false}
+                      >
+                        Sửa
+                      </Button>
+                    )}
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDelete(r.id)}
+                    >
+                      Xoá
+                    </Button>
+                  </>
                 )}
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDelete(r.id)}
-                >
-                  Xoá
-                </Button>
               </div>
             </div>
           ))}

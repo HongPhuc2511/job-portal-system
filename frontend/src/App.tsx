@@ -28,6 +28,14 @@ export function App() {
             }
           />
           <Route
+            path="/resumes/:id/edit"
+            element={
+              <ProtectedRoute>
+                <ResumeBuilder />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/resumes/:id"
             element={
               <ProtectedRoute>

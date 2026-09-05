@@ -1,6 +1,10 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { createResumeBuilder } from "@/api/resume"
+import { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import {
+  createResumeBuilder,
+  getResumeDetail,
+  updateResume,
+} from "@/api/resume"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -23,6 +27,9 @@ interface Education {
 
 export default function ResumeBuilder() {
   const navigate = useNavigate()
+  const { id } = useParams()
+  const isEditing = Boolean(id)
+
   const [title, setTitle] = useState("")
   const [fullName, setFullName] = useState("")
   const [phone, setPhone] = useState("")
@@ -31,6 +38,36 @@ export default function ResumeBuilder() {
   const [experience, setExperience] = useState<Experience[]>([])
   const [education, setEducation] = useState<Education[]>([])
   const [message, setMessage] = useState("")
+  const [loading, setLoading] = useState(isEditing)
+
+  useEffect(() => {
+    if (!isEditing) return
+
+    const load = async () => {
+      const res = await getResumeDetail(Number(id))
+      const resume = res.data
+      setTitle(resume.title)
+      const c = resume.content || {}
+      setFullName(c.full_name || "")
+      setPhone(c.phone || "")
+      setSummary(c.summary || "")
+      setSkills((c.skills || []).join(", "))
+      setExperience(
+        (c.experience || []).map((exp: Omit<Experience, "id">) => ({
+          id: crypto.randomUUID(),
+          ...exp,
+        }))
+      )
+      setEducation(
+        (c.education || []).map((edu: Omit<Education, "id">) => ({
+          id: crypto.randomUUID(),
+          ...edu,
+        }))
+      )
+      setLoading(false)
+    }
+    load()
+  }, [id, isEditing])
 
   const addExperience = () => {
     setExperience([
@@ -46,19 +83,19 @@ export default function ResumeBuilder() {
   }
 
   const updateExperience = (
-    id: string,
+    expId: string,
     field: keyof Experience,
     value: string
   ) => {
     setExperience(
       experience.map((exp) =>
-        exp.id === id ? { ...exp, [field]: value } : exp
+        exp.id === expId ? { ...exp, [field]: value } : exp
       )
     )
   }
 
-  const removeExperience = (id: string) => {
-    setExperience(experience.filter((exp) => exp.id !== id))
+  const removeExperience = (expId: string) => {
+    setExperience(experience.filter((exp) => exp.id !== expId))
   }
 
   const addEducation = () => {
@@ -67,35 +104,45 @@ export default function ResumeBuilder() {
       { id: crypto.randomUUID(), school: "", major: "", duration: "" },
     ])
   }
+
   const updateEducation = (
-    id: string,
+    eduId: string,
     field: keyof Education,
     value: string
   ) => {
     setEducation(
-      education.map((edu) => (edu.id === id ? { ...edu, [field]: value } : edu))
+      education.map((edu) =>
+        edu.id === eduId ? { ...edu, [field]: value } : edu
+      )
     )
   }
 
-  const removeEducation = (id: string) => {
-    setEducation(education.filter((edu) => edu.id !== id))
+  const removeEducation = (eduId: string) => {
+    setEducation(education.filter((edu) => edu.id !== eduId))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    const content = {
+      full_name: fullName,
+      phone,
+      summary,
+      experience: experience.map(({ id: _id, ...rest }) => rest),
+      education: education.map(({ id: _id, ...rest }) => rest),
+      skills: skills
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+    }
+
     try {
-      await createResumeBuilder(title, {
-        full_name: fullName,
-        phone,
-        summary,
-        experience,
-        education,
-        skills: skills
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean),
-      })
-      setMessage("Tạo CV thành công!")
+      if (isEditing) {
+        await updateResume(Number(id), title, content)
+        setMessage("Cập nhật CV thành công!")
+      } else {
+        await createResumeBuilder(title, content)
+        setMessage("Tạo CV thành công!")
+      }
       navigate("/resumes")
     } catch (_err) {
       setMessage("Có lỗi xảy ra, thử lại sau")
@@ -105,11 +152,14 @@ export default function ResumeBuilder() {
   const textareaClass =
     "border-input flex min-h-[80px] w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
 
+  if (loading)
+    return <p className="mx-auto max-w-2xl px-4 py-12">Đang tải...</p>
+
   return (
     <div className="mx-auto max-w-2xl space-y-6 px-4 py-12">
       <Card>
         <CardHeader>
-          <CardTitle>Tạo CV theo mẫu</CardTitle>
+          <CardTitle>{isEditing ? "Sửa CV" : "Tạo CV theo mẫu"}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -270,7 +320,7 @@ export default function ResumeBuilder() {
               <p className="text-muted-foreground text-sm">{message}</p>
             )}
             <Button type="submit" className="w-full">
-              Tạo CV
+              {isEditing ? "Lưu thay đổi" : "Tạo CV"}
             </Button>
           </form>
         </CardContent>

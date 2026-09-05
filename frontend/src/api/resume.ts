@@ -36,6 +36,9 @@ export const createResumeBuilder = (title: string, content: object) => {
   return axiosClient.post("/resumes/builder", { title, content })
 }
 
-export const updateResume = (id: number, title: string) => {
-  return axiosClient.put(`/resumes/${id}`, { title })
+export const updateResume = (id: number, title: string, content?: object) => {
+  return axiosClient.put(
+    `/resumes/${id}`,
+    content ? { title, content } : { title }
+  )
 }
