@@ -104,11 +104,20 @@ export default function Resumes() {
               <span style={{ fontSize: 12, color: "#94a3b8" }}>
                 {new Date(r.created_at).toLocaleDateString("vi-VN")}
               </span>
-              {r.resume_type === "upload" && (
+              {r.resume_type === "upload" ? (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => viewResumeFile(r.id)}
+                >
+                  Xem
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  render={<Link to={`/resumes/${r.id}`} />}
+                  nativeButton={false}
                 >
                   Xem
                 </Button>

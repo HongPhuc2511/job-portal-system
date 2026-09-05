@@ -7,6 +7,7 @@ import { Login } from "@/pages/login"
 import { Register } from "@/pages/register"
 import Resumes from "@/pages/resumes"
 import ResumeBuilder from "./pages/resume_builder"
+import ResumeDetailPage from "./pages/resume_detail"
 
 export function App() {
   return (
@@ -23,6 +24,14 @@ export function App() {
             element={
               <ProtectedRoute>
                 <ResumeBuilder />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/resumes/:id"
+            element={
+              <ProtectedRoute>
+                <ResumeDetailPage />
               </ProtectedRoute>
             }
           />
