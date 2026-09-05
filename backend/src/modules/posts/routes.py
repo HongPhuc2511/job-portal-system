@@ -2,7 +2,8 @@ from datetime import datetime
 
 from flask_jwt_extended import get_jwt_identity
 from flask_smorest.blueprint import Blueprint
-from sqlalchemy import select
+from sqlalchemy import select, or_, and_
+from flask import request
 
 from src.extensions import db
 from src.modules.auth.decorators import role_required
@@ -24,15 +25,19 @@ job_posts_bp = Blueprint(
 @job_posts_bp.response(200, schema=JobPostResponse(many=True))
 def get_latest_jobs():
     """
-    Lấy 20 bài tuyển dụng mới nhất
+    Lấy 20 bài tuyển dụng mới nhất (Có hỗ trợ lọc theo tiêu chí)
     """
+    province_id = request.args.get("province_id", type=int)
+    job_type = request.args.get("job_type", type=str)
+    salary = request.args.get("salary", type=int)
 
     stmt = (
         select(JobPost)
         .order_by(JobPost.id.desc())
         .limit(20)
         .where(
-            JobPost.status == JobPostStatus.ACTIVE, JobPost.deadline >= datetime.now()
+            JobPost.status == JobPostStatus.ACTIVE, 
+            JobPost.deadline >= datetime.now()
         )
     )
     return db.session.scalars(stmt).all()
