@@ -40,6 +40,22 @@ def get_latest_jobs():
             JobPost.deadline >= datetime.now()
         )
     )
+
+    if province_id:
+        stmt = stmt.where(JobPost.province_id == province_id)
+        
+    if job_type:
+        stmt = stmt.where(JobPost.job_type == job_type)
+
+    if salary:
+        stmt = stmt.where(
+            or_(
+                JobPost.salary_max >= salary,
+                JobPost.salary_min >= salary,
+                and_(JobPost.salary_max.is_(None), JobPost.salary_min.is_(None))
+            )
+        )
+
     return db.session.scalars(stmt).all()
 
 
