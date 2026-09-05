@@ -27,3 +27,7 @@ export const viewResumeFile = async (id: number) => {
 export const createResumeBuilder = (title: string, content: object) => {
   return axiosClient.post("/resumes/builder", { title, content })
 }
+
+export const getResumeDetail = (id: number) => {
+  return axiosClient.get(`/resumes/${id}`)
+}

@@ -119,3 +119,16 @@ def create_resume_builder(data):
     db.session.commit()
 
     return new_resume
+
+@resumes_bp.route("/<int:resume_id>", methods=["GET"])
+@jwt_required()
+@resumes_bp.response(200, schema=ResumeResponse, description="Chi tiet CV")
+def get_resume(resume_id):
+    """Ung vien xem chi tiet 1 CV cua chinh minh"""
+    user_id = get_jwt_identity()
+    resume = db.session.get(Resume, resume_id)
+
+    if not resume or str(resume.user_id) != str(user_id):
+        return jsonify({"message": "Khong tim thay CV"}), 404
+
+    return resume
