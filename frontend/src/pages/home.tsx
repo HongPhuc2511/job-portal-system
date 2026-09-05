@@ -56,7 +56,10 @@ export function Home() {
 			</h2>
 
 			<div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-muted/30 p-4 rounded-xl border">
-				<Select value={provinceId} onValueChange={setProvinceId}>
+				<Select
+					value={provinceId}
+					onValueChange={(val) => setProvinceId(val ?? "all")}
+				>
 					<SelectTrigger>
 						<SelectValue placeholder="Tất cả địa điểm" />
 					</SelectTrigger>
@@ -70,7 +73,10 @@ export function Home() {
 					</SelectContent>
 				</Select>
 
-				<Select value={jobType} onValueChange={setJobType}>
+				<Select
+					value={jobType}
+					onValueChange={(val) => setJobType(val ?? "all")}
+				>
 					<SelectTrigger>
 						<SelectValue placeholder="Loại hình" />
 					</SelectTrigger>
