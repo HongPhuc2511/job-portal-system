@@ -20,16 +20,17 @@ export type JobFilterParams = {
 
 export type LatestJobsResponse = Job[] | { jobs?: Job[]; data?: Job[] };
 
-const getLatestJobs = async (): Promise<LatestJobsResponse> => {
-	const response = await axiosClient.get("/jobs/latest");
+const getLatestJobs = async (
+	params?: JobFilterParams,
+): Promise<LatestJobsResponse> => {
+	const response = await axiosClient.get("/posts/", { params });
 	return response.data;
 };
 
 export type CreatePostPayload = v.InferOutput<typeof PostSchema>;
 
-// TODO: đổi endpoint nếu backend dùng đường dẫn khác (ví dụ `/jobs`).
 const createPost = (payload: CreatePostPayload) => {
-	return axiosClient.post("/posts", payload);
+	return axiosClient.post("/posts/", payload);
 };
 
 export { createPost, getLatestJobs };
