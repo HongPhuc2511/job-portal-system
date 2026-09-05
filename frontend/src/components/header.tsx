@@ -29,6 +29,14 @@ export function Header() {
           <Link to="/" className="transition-colors hover:text-foreground">
             Tuyển dụng
           </Link>
+          {user && (
+            <Link
+              to="/resumes"
+              className="transition-colors hover:text-foreground"
+            >
+              CV của tôi
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-2">
