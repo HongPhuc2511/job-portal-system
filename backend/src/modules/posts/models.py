@@ -40,7 +40,6 @@ class JobPost(BaseModel):
 
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
-    requirements: Mapped[str | None] = mapped_column(Text, nullable=True)
     head_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     experience_level: Mapped[ExperienceLevel] = mapped_column(

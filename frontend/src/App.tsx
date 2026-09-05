@@ -10,6 +10,7 @@ import ResumeDetailPage from "@/pages/resume_detail"
 import Resumes from "@/pages/resumes"
 import ResumeBuilder from "./pages/resume_builder"
 import ResumeDetailPage from "./pages/resume_detail"
+import PostCreatePage from "@/pages/post-create";
 
 export function App() {
   return (
@@ -45,6 +46,9 @@ export function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/posts/create" element={<PostCreatePage />} />
+
         </Routes>
       </AuthProvider>
     </BrowserRouter>
