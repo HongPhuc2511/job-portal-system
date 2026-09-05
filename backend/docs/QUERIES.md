@@ -32,16 +32,16 @@ user = db.session.scalars(stmt).one()        # lỗi nếu 0 hoặc >1
 user = db.session.scalars(stmt).scalar_one()  # giống .one(), trả về phần tử đầu
 ```
 
-### Lấy nhiều bản ghi
-
-```python
-users = db.session.scalars(select(User)).all()
-```
-
 ### Lấy 1 bản ghi theo khóa chính
 
 ```python
 user = db.session.get(User, user_id)
+```
+
+### Lấy nhiều bản ghi
+
+```python
+users = db.session.scalars(select(User)).all()
 ```
 
 ### Lọc nâng cao

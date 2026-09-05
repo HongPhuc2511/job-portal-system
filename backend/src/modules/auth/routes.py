@@ -1,10 +1,17 @@
 from flask import abort, jsonify
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    get_jwt,
+    get_jwt_identity,
+    jwt_required,
+)
 from flask_smorest import Blueprint
 from sqlalchemy import select
+
 from src.extensions import db
 
-from .models import User, TokenBlocklist
+from .models import TokenBlocklist, User
 from .schemas import LoginRequest, RegisterRequest, TokenResponse
 
 auth_bp = Blueprint(
@@ -56,15 +63,24 @@ def login(data):
     ).one_or_none()
 
     if not user or not user.check_password(data["password"]):
-        abort(401, response=jsonify({
-            "code": "invalid_credentials",
-            "message": "Email hoặc mật khẩu không đúng!"
-        }))
+        abort(
+            401,
+            response=jsonify(
+                {
+                    "code": "invalid_credentials",
+                    "message": "Email hoặc mật khẩu không đúng!",
+                }
+            ),
+        )
 
     additional_claims = {"role": user.role.value, "email": user.email}
 
-    access_token = create_access_token(identity=str(user.id), additional_claims=additional_claims)
-    refresh_token = create_refresh_token(identity=str(user.id), additional_claims=additional_claims)
+    access_token = create_access_token(
+        identity=str(user.id), additional_claims=additional_claims
+    )
+    refresh_token = create_refresh_token(
+        identity=str(user.id), additional_claims=additional_claims
+    )
 
     return {
         "access_token": access_token,
@@ -77,6 +93,7 @@ def login(data):
             "role": user.role.value,
         },
     }, 200
+
 
 @auth_bp.route("/logout", methods=["POST"])
 @jwt_required()
@@ -97,5 +114,7 @@ def refresh():
     claims = get_jwt()
     additional_claims = {"role": claims.get("role"), "email": claims.get("email")}
 
-    new_access_token = create_access_token(identity=current_user_id, additional_claims=additional_claims)
-    return {"access_token": new_access_token, "token_type": "Bearer"}, 200
+    new_access_token = create_access_token(
+        identity=current_user_id, additional_claims=additional_claims
+    )
+    return {"access_token": new_access_token, "token_type": "Bearer"}, 201
