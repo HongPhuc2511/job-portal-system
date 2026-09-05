@@ -7,7 +7,7 @@ import {
 } from "@formisch/react";
 import { ChevronLeftIcon } from "lucide-react";
 import type * as v from "valibot";
-import { useDistricts, useProvinces } from "@/api/address";
+import { useDistricts, useProvinces } from "@/api/location";
 import { useCreatePost } from "@/api/post-api";
 import {
 	DatePickerField,

@@ -9,7 +9,7 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from sqlalchemy import select
 
 from src.extensions import db
-from src.modules.address import District, Province
+from src.modules.location import District, Province
 
 from .enums import ExperienceLevel, JobType, SalaryPeriod, WorkModel
 from .models import JobPost
@@ -57,7 +57,7 @@ class JobPostRequest(Schema):
                 ).one_or_none()
             if province is None or district is None:
                 raise ValidationError(
-                    "Chưa seed 'Toàn Quốc' — hãy chạy python -m src.modules.address.seed",
+                    "Chưa seed 'Toàn Quốc' — hãy chạy python -m src.modules.location.seed",
                     field_name="province_id",
                 )
             data["province_id"] = province.id

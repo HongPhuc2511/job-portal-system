@@ -6,7 +6,7 @@ export function useProvinces() {
 	return useQuery({
 		queryKey: ["provinces"],
 		queryFn: async () => {
-			const response = await axiosClient.get<Province[]>("/address/provinces");
+			const response = await axiosClient.get<Province[]>("/location/provinces");
 			return response.data;
 		},
 	});
@@ -17,7 +17,7 @@ export function useDistricts(provinceId: number | null) {
 		queryKey: ["districts", provinceId],
 		queryFn: async () => {
 			const response = await axiosClient.get<District[]>(
-				`/address/provinces/${provinceId}/districts`,
+				`/location/provinces/${provinceId}/districts`,
 			);
 			return response.data;
 		},

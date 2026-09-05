@@ -15,6 +15,9 @@ import type { AxiosError } from "axios";
  *   "status": "Unprocessable Entity"
  * }
  * ```
+ *
+ * Quy ước: mọi lỗi của từng field đều nằm dưới `errors.json.<Tên field>`.
+ * Các scope khác ("query", "path", ...) hoặc key "_schema" là lỗi form-level.
  */
 type BackendErrorBody = {
 	code?: number;
@@ -24,27 +27,11 @@ type BackendErrorBody = {
 };
 
 export type BackendErrors = {
-	/** Lỗi gắn theo từng field của form (key = tên field). */
+	/** Lỗi gắn theo từng field của form (key = tên field trong schema). */
 	fieldErrors: Record<string, string[]>;
-	/** Lỗi chung (không thuộc field nào / lỗi form-level). */
+	/** Lỗi chung (form-level). */
 	globalErrors: string[];
 };
-
-const POST_FIELDS = [
-	"title",
-	"description",
-	"head_count",
-	"experience_level",
-	"work_model",
-	"job_type",
-	"province_id",
-	"district_id",
-	"address",
-	"deadline",
-	"salary_min",
-	"salary_max",
-	"salary_period",
-] as const;
 
 function messagesOf(value: unknown): string[] {
 	if (Array.isArray(value)) {
@@ -58,6 +45,7 @@ function messagesOf(value: unknown): string[] {
 
 /**
  * Chuyển lỗi API (axios error) thành lỗi field + lỗi global để đổ vào Formisch.
+ * Generic với mọi schema — không hardcode danh sách field.
  */
 export function extractBackendErrors(error: unknown): BackendErrors {
 	const fieldErrors: Record<string, string[]> = {};
@@ -67,22 +55,34 @@ export function extractBackendErrors(error: unknown): BackendErrors {
 	const data = axiosError?.response?.data;
 
 	if (data?.errors && typeof data.errors === "object") {
-		for (const scopedErrors of Object.values(data.errors)) {
+		for (const [scope, scopedErrors] of Object.entries(data.errors)) {
+			// Scope trực tiếp là chuỗi message (vd errors: { "json": "Lỗi méo" }).
 			if (typeof scopedErrors !== "object" || scopedErrors === null) {
 				globalErrors.push(...messagesOf(scopedErrors));
 				continue;
 			}
 
-			for (const [key, messages] of Object.entries(
+			if (scope === "json") {
+				// Mỗi key trong errors.json là tên field tương ứng của schema.
+				for (const [field, messages] of Object.entries(
+					scopedErrors as Record<string, unknown>,
+				)) {
+					if (field === "_schema") {
+						// "_schema" (quy ước marshmallow) = lỗi form-level.
+						globalErrors.push(...messagesOf(messages));
+					} else {
+						fieldErrors[field] = messagesOf(messages);
+					}
+				}
+				continue;
+			}
+
+			// Các scope khác ("query", "path", ...) không map được vào field form →
+			// gộp toàn bộ message vào lỗi global.
+			for (const messages of Object.values(
 				scopedErrors as Record<string, unknown>,
 			)) {
-				const list = messagesOf(messages);
-				if ((POST_FIELDS as readonly string[]).includes(key)) {
-					fieldErrors[key] = list;
-				} else {
-					// Key không thuộc form (vd "_schema", "json", ...) → lỗi global.
-					globalErrors.push(...list);
-				}
+				globalErrors.push(...messagesOf(messages));
 			}
 		}
 

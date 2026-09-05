@@ -7,16 +7,16 @@ from src.extensions import db
 from .models import District, Province
 from .schemas import DistrictDetailResponse, DistrictResponse, ProvinceResponse
 
-address_bp = Blueprint(
-    "address",
-    "address",
-    url_prefix="/api/address",
+location_bp = Blueprint(
+    "location",
+    "location",
+    url_prefix="/api/location",
     description="Danh bạ địa danh (tỉnh/thành, quận/huyện)",
 )
 
 
-@address_bp.route("/provinces", methods=["GET"])
-@address_bp.response(
+@location_bp.route("/provinces", methods=["GET"])
+@location_bp.response(
     200,
     schema=ProvinceResponse(many=True),
     description="Danh sách tỉnh/thành",
@@ -27,8 +27,8 @@ def get_provinces():
     return db.session.scalars(stmt).all()
 
 
-@address_bp.route("/provinces/<int:province_id>/districts", methods=["GET"])
-@address_bp.response(
+@location_bp.route("/provinces/<int:province_id>/districts", methods=["GET"])
+@location_bp.response(
     200,
     schema=DistrictResponse(many=True),
     description="Danh sách quận/huyện của một tỉnh/thành",
@@ -47,8 +47,8 @@ def get_districts(province_id: int):
     return db.session.scalars(stmt).all()
 
 
-@address_bp.route("/districts/<int:district_id>", methods=["GET"])
-@address_bp.response(
+@location_bp.route("/districts/<int:district_id>", methods=["GET"])
+@location_bp.response(
     200,
     schema=DistrictDetailResponse(),
     description="Lấy thông tin quận/huyện",

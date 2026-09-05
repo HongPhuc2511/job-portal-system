@@ -18,7 +18,7 @@ from src.extensions import BaseModel
 from .enums import ExperienceLevel, JobPostStatus, JobType, SalaryPeriod, WorkModel
 
 if TYPE_CHECKING:
-    from src.modules.address import District, Province
+    from src.modules.location import District, Province
     from src.modules.auth.models import User
     from src.modules.jobs.models import Application
 

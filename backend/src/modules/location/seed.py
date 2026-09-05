@@ -16,7 +16,7 @@ def seed() -> tuple[int, int]:
     Seed dữ liệu, tạo tỉnh thành và quận/huyện cho database. Cách chạy:
 
     ```bash
-    python -m src.modules.address.seed
+    python -m src.modules.location.seed
     ```
     """
     with open(SEED_DATA_PATH, encoding="utf-8") as f:

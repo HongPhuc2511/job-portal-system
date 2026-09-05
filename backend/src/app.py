@@ -1,13 +1,13 @@
 from flask import Flask
 from flask_cors import CORS
 
-import src.modules.address.models
+import src.modules.location.models
 import src.modules.auth.models
 import src.modules.jobs.models
 from src.config import Config
 from src.extensions import api_document, db, jwt, ma, migrate
 
-from .modules.address.routes import address_bp
+from .modules.location.routes import location_bp
 from .modules.auth.routes import auth_bp
 from .modules.jobs.routes import resumes_bp
 from .modules.posts.routes import job_posts_bp
@@ -30,7 +30,7 @@ def create_app() -> Flask:
     jwt.init_app(app)
     api_document.init_app(app)
 
-    api_document.register_blueprint(address_bp)
+    api_document.register_blueprint(location_bp)
     api_document.register_blueprint(auth_bp)
     api_document.register_blueprint(resumes_bp)
     api_document.register_blueprint(job_posts_bp)
