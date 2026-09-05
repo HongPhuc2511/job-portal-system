@@ -105,6 +105,20 @@ def get_resume_file(resume_id):
     upload_folder = current_app.config["UPLOAD_FOLDER"]
     return send_from_directory(upload_folder, resume.file_path)
 
+@resumes_bp.route("/<int:resume_id>", methods=["DELETE"])
+@jwt_required()
+@resumes_bp.response(200, description="Xóa CV thành công")
+def delete_resume(resume_id):
+    """Ứng viên xóa CV của chính mình"""
+    user_id = get_jwt_identity()
+    resume = db.session.get(Resume,resume_id)
+    if not resume or str(resume.user_id) != str(user_id):
+        return jsonify({"message": "Khong tim thay CV"}), 404
+
+    db.session.delete(resume)
+    db.session.commit()
+    return {"message":"Xóa CV thành công!"},200
+
 @resumes_bp.route("/builder", methods=["POST"])
 @jwt_required()
 @resumes_bp.arguments(ResumeBuilderRequest)
@@ -132,3 +146,26 @@ def get_resume(resume_id):
         return jsonify({"message": "Khong tim thay CV"}), 404
 
     return resume
+
+@resumes_bp.route("/<int:resume_id>",methods=["PUT"])
+@jwt_required()
+@resumes_bp.arguments(ResumeUpdateRequest)
+@resumes_bp.response(200,schema=ResumeResponse, description="Cập nhật CV thành công")
+def update_resume(data,resume_id):
+    """Ứng viên sửa CV của mình"""
+    user_id = get_jwt_identity()
+    resume = db.session.get(Resume, resume_id)
+
+    if not resume or str(resume.user_id) != str(user_id):
+        return jsonify({"message": "Khong tim thay CV"}), 404
+
+    if "title" in data:
+        resume.title = data["title"]
+
+    if "content" in data:
+        resume.content = data["content"]
+
+    db.session.commit()
+    return resume
+
+

@@ -3,8 +3,10 @@ import { Header } from "@/components/header"
 import ProtectedRoute from "@/components/protected-route"
 import { AuthProvider } from "@/context/auth-context"
 import { Home } from "@/pages/home"
-import { Login } from "@/pages/login"
-import { Register } from "@/pages/register"
+import Login from "@/pages/login"
+import Register from "@/pages/register"
+import ResumeBuilder from "@/pages/resume_builder"
+import ResumeDetailPage from "@/pages/resume_detail"
 import Resumes from "@/pages/resumes"
 import ResumeBuilder from "./pages/resume_builder"
 import ResumeDetailPage from "./pages/resume_detail"
@@ -21,6 +23,14 @@ export function App() {
           <Route path="/resumes" element={<Resumes />} />
           <Route
             path="/resumes/builder"
+            element={
+              <ProtectedRoute>
+                <ResumeBuilder />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/resumes/:id/edit"
             element={
               <ProtectedRoute>
                 <ResumeBuilder />
