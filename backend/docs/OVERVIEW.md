@@ -34,6 +34,8 @@ pip install -r requirements.txt
 
 set FLASK_APP=run.py
 flask db upgrade
+
+python -m src.modules.address.seed
 ```
 
 #### Chạy ứng dụng chế độ develop

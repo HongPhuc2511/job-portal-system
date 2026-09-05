@@ -1,34 +1,34 @@
 {
-	// Overrides the global settings.json for this workspace.
-	// The global config points the external formatter at `bun biome ...`,
-	// which fails because `biome` is only installed inside frontend/
-	// (bun resolves scripts/bins relative to the working directory = workspace root).
-	// The biome language server (same version 2.5.11) is sufficient on its own.
-	"languages": {
-		"JavaScript": {
-			"formatter": {
-				"language_server": { "name": "biome" }
-			}
-		},
-		"TypeScript": {
-			"formatter": {
-				"language_server": { "name": "biome" }
-			}
-		},
-		"TSX": {
-			"formatter": {
-				"language_server": { "name": "biome" }
-			}
-		}
-	},
-	"lsp": {
-		"biome": {
-			"settings": {
-				// The global settings use "<path>/biome.json", which doesn't exist.
-				// The real config lives at the repo root as biome.jsonc; "<path>"
-				// resolves to the workspace root.
-				"config_path": "<path>/biome.jsonc"
-			}
-		}
-	}
+  // Overrides the global settings.json for this workspace.
+  // The global config points the external formatter at `bun biome ...`,
+  // which fails because `biome` is only installed inside frontend/
+  // (bun resolves scripts/bins relative to the working directory = workspace root).
+  // The biome language server (same version 2.5.11) is sufficient on its own.
+  "languages": {
+    "JavaScript": {
+      "formatter": {
+        "language_server": { "name": "biome" }
+      }
+    },
+    "TypeScript": {
+      "formatter": {
+        "language_server": { "name": "biome" }
+      }
+    },
+    "TSX": {
+      "formatter": {
+        "language_server": { "name": "biome" }
+      }
+    }
+  },
+  "lsp": {
+    "biome": {
+      "settings": {
+        // The global settings use "<path>/biome.json", which doesn't exist.
+        // The real config lives at the repo root as biome.jsonc; "<path>"
+        // resolves to the workspace root.
+        "config_path": "<path>/biome.jsonc"
+      }
+    }
+  }
 }
