@@ -147,3 +147,22 @@ def get_resume(resume_id):
 
     return resume
 
+@resumes_bp.route("/<int:resume_id>",methods=["PUT"])
+@jwt_required()
+@resumes_bp.arguments(ResumeUpdateRequest)
+@resumes_bp.response(200,schema=ResumeResponse, description="Cập nhật CV thành công")
+def update_resume(data,resume_id):
+    """Ứng viên sửa CV của mình"""
+    user_id = get_jwt_identity()
+    resume = db.session.get(Resume, resume_id)
+
+    if not resume or str(resume.user_id) != str(user_id):
+        return jsonify({"message": "Khong tim thay CV"}), 404
+
+    if "title" in data:
+        resume.title = data["title"]
+
+    db.session.commit()
+    return resume
+
+
