@@ -8,7 +8,7 @@ from sqlalchemy import select
 
 from src.extensions import db
 
-from .models import JobPost, Resume, ResumeType
+from .models import Resume, ResumeType
 from .schemas import ResumeResponse,ResumeBuilderRequest,ResumeUpdateRequest
 
 resumes_bp = Blueprint(
@@ -135,5 +135,3 @@ def update_resume(data,resume_id):
 
     db.session.commit()
     return resume
-
-

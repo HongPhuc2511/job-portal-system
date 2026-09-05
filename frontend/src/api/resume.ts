@@ -15,8 +15,8 @@ export const getResumes = () => {
 };
 
 export const getResumeDetail = (id: number) => {
-  return axiosClient.get(`/resumes/${id}`)
-}
+	return axiosClient.get(`/resumes/${id}`);
+};
 
 export const viewResumeFile = async (id: number) => {
 	const res = await axiosClient.get(`/resumes/${id}/file`, {
@@ -29,18 +29,16 @@ export const viewResumeFile = async (id: number) => {
 };
 
 export const deleteResume = (id: number) => {
-  return axiosClient.delete(`/resumes/${id}`)
-}
+	return axiosClient.delete(`/resumes/${id}`);
+};
 
 export const createResumeBuilder = (title: string, content: object) => {
-  return axiosClient.post("/resumes/builder", { title, content })
-}
+	return axiosClient.post("/resumes/builder", { title, content });
+};
 
 export const updateResume = (id: number, title: string, content?: object) => {
-  return axiosClient.put(
-    `/resumes/${id}`,
-    content ? { title, content } : { title }
-  )
-export const getResumeDetail = (id: number) => {
-  return axiosClient.get(`/resumes/${id}`)
-}
+	return axiosClient.put(
+		`/resumes/${id}`,
+		content ? { title, content } : { title },
+	);
+};
