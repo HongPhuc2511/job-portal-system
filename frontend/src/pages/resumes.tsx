@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from "react"
-<<<<<<< HEAD
-import { createResumes, getResumes, viewResumeFile } from "@/api/resume"
-=======
-import { createResumes, deleteResume, getResumes } from "@/api/resume"
->>>>>>> 5559c10 (feat:thêm chức năng xóa CV bên frontend và sửa lại file resumes bằng tailwind css)
+import { Link } from "react-router-dom"
+import {
+  createResumes,
+  deleteResume,
+  getResumes,
+  viewResumeFile,
+} from "@/api/resume"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -12,6 +14,7 @@ import { Label } from "@/components/ui/label"
 interface Resume {
   id: number
   title: string
+  resume_type: string
   file_path: string
   created_at: string
 }
@@ -102,35 +105,30 @@ export default function Resumes() {
             <p className="text-muted-foreground text-sm">Chưa có CV nào.</p>
           )}
           {resumes.map((r) => (
-<<<<<<< HEAD
-            <div
-              key={r.id}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "10px 0",
-                borderBottom: "1px solid #333",
-              }}
-            >
-              <span>{r.title}</span>
-              <span style={{ fontSize: 12, color: "#94a3b8" }}>
-                {new Date(r.created_at).toLocaleDateString("vi-VN")}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => viewResumeFile(r.id)}
-              >
-                Xem
-              </Button>
-=======
             <div key={r.id} className="flex items-center justify-between py-3">
               <span className="font-medium text-sm">{r.title}</span>
               <div className="flex items-center gap-3">
                 <span className="text-muted-foreground text-xs">
                   {new Date(r.created_at).toLocaleDateString("vi-VN")}
                 </span>
+                {r.resume_type === "upload" ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => viewResumeFile(r.id)}
+                  >
+                    Xem
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    render={<Link to={`/resumes/${r.id}`} />}
+                    nativeButton={false}
+                  >
+                    Xem
+                  </Button>
+                )}
                 <Button
                   variant="destructive"
                   size="sm"
@@ -139,7 +137,6 @@ export default function Resumes() {
                   Xoá
                 </Button>
               </div>
->>>>>>> 5559c10 (feat:thêm chức năng xóa CV bên frontend và sửa lại file resumes bằng tailwind css)
             </div>
           ))}
         </CardContent>
