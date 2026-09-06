@@ -7,3 +7,8 @@ export function formatLocalDateTime(date: Date) {
 	const minute = String(date.getMinutes()).padStart(2, "0");
 	return `${year}-${month}-${day}T${hour}:${minute}`;
 }
+
+export function formatDisplayDate(date?: Date | string | null) {
+	if (!date) return "-";
+	return new Date(date).toLocaleDateString("vi-VN");
+}

@@ -2,7 +2,8 @@ from datetime import datetime
 
 from flask_jwt_extended import get_jwt_identity
 from flask_smorest.blueprint import Blueprint
-from sqlalchemy import select
+from flask_smorest.pagination import PaginationParameters
+from sqlalchemy import func, select
 
 from src.extensions import db
 from src.modules.auth.decorators import role_required
@@ -34,6 +35,24 @@ def get_latest_jobs():
         .where(
             JobPost.status == JobPostStatus.ACTIVE, JobPost.deadline >= datetime.now()
         )
+    )
+    return db.session.scalars(stmt).all()
+
+
+@job_posts_bp.route("/employer/<int:employer_id>", methods=["GET"])
+@job_posts_bp.response(200, schema=JobPostResponse(many=True))
+@job_posts_bp.paginate()
+def get_employer_posts(employer_id: int, pagination_parameters: PaginationParameters):
+    pagination_parameters.item_count = db.session.scalar(
+        select(func.count(JobPost.id)).where(JobPost.employer_id == employer_id)
+    )
+
+    stmt = (
+        select(JobPost)
+        .where(JobPost.employer_id == employer_id)
+        .order_by(JobPost.id.desc())
+        .offset(pagination_parameters.first_item)
+        .limit(pagination_parameters.page_size)
     )
     return db.session.scalars(stmt).all()
 
