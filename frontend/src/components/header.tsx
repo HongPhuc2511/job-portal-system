@@ -27,16 +27,10 @@ export function Header() {
 					💼 JobPortal
 				</Link>
 
-				<nav className="ml-2 hidden items-center gap-4 text-secondary-foreground text-sm md:flex">
-					<Link to="/" className="transition-colors hover:text-foreground">
-						Trang chủ
-					</Link>
-					<Link to="/" className="transition-colors hover:text-foreground">
-						Tìm việc làm
-					</Link>
-					<Link to="/" className="transition-colors hover:text-foreground">
-						Tuyển dụng
-					</Link>
+				<nav className="ml-2 hidden items-center gap-4 text-secondary-foreground text-sm md:flex *:hover:text-foreground">
+					<Link to="/">Trang chủ</Link>
+					<Link to="/">Tìm việc làm</Link>
+					<Link to="/">Tuyển dụng</Link>
 				</nav>
 
 				<div className="ml-auto flex items-center gap-2">
@@ -144,7 +138,7 @@ function UserButton() {
 				{user.role === "employer" && (
 					<>
 						<DropdownMenuGroup>
-							<DropdownMenuItem>
+							<DropdownMenuItem render={<Link to="/posts" />}>
 								<FileTextIcon />
 								Quản lý bài đăng
 							</DropdownMenuItem>

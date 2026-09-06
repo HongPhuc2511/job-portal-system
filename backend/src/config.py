@@ -12,7 +12,10 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = 3600
     JWT_REFRESH_TOKEN_EXPIRES = 86400
 
-    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads", "resumes")
+    UPLOAD_FOLDER = os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), "uploads", "resumes"
+    )
+    DEFAULT_PAGINATION_PARAMETERS = {"page": 1, "page_size": 10, "max_page_size": 100}
 
     API_TITLE = "Job Portal API"
     API_VERSION = "v1"

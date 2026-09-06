@@ -6,7 +6,7 @@ import {
 	useForm,
 } from "@formisch/react";
 import { ChevronLeftIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type * as v from "valibot";
 import { useDistricts, useProvinces } from "@/api/location";
 import { useCreatePost } from "@/api/post-api";
@@ -88,7 +88,7 @@ export default function PostCreatePage() {
 	return (
 		<main className="mx-auto max-w-5xl pt-4">
 			<div className="flex items-center justify-between gap-4 pb-4">
-				<Button variant="outline">
+				<Button variant="outline" render={<Link to="/posts" />}>
 					<ChevronLeftIcon />
 					Quay về quản lý bài đăng
 				</Button>

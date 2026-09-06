@@ -3,7 +3,7 @@ import axiosClient from "./axiosClient";
 export type Role = "seeker" | "employer";
 
 export type User = {
-	id?: string | number;
+	id: number;
 	email: string;
 	full_name: string;
 	phone?: string;
