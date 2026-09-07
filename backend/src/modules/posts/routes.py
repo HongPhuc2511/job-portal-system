@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import request
+from flask import abort, request
 from flask_jwt_extended import get_jwt_identity
 from flask_smorest.blueprint import Blueprint
 from flask_smorest.pagination import PaginationParameters
@@ -59,7 +59,11 @@ def get_latest_jobs(pagination_parameters: PaginationParameters):
 
     stmt = (
         select(JobPost)
-        .options(joinedload(JobPost.province), joinedload(JobPost.district))
+        .options(
+            joinedload(JobPost.province),
+            joinedload(JobPost.district),
+            joinedload(JobPost.employer),
+        )
         .where(*filters)
         .order_by(JobPost.id.desc())
         .offset(pagination_parameters.first_item)
@@ -78,7 +82,11 @@ def get_employer_posts(employer_id: int, pagination_parameters: PaginationParame
 
     stmt = (
         select(JobPost)
-        .options(joinedload(JobPost.province), joinedload(JobPost.district))
+        .options(
+            joinedload(JobPost.province),
+            joinedload(JobPost.district),
+            joinedload(JobPost.employer),
+        )
         .where(JobPost.employer_id == employer_id)
         .order_by(JobPost.id.desc())
         .offset(pagination_parameters.first_item)
@@ -99,3 +107,38 @@ def create_job_post(data):
     db.session.add(job)
     db.session.commit()
     return job
+
+
+@job_posts_bp.route("/<int:post_id>", methods=["PUT"])
+@job_posts_bp.arguments(JobPostRequest)
+@role_required(UserRole.EMPLOYER)
+@job_posts_bp.response(200, schema=JobPostResponse)
+def update_job_post(data, post_id: int):
+    """
+    Cập nhật một bài đăng tuyển dụng (chỉ nhà tuyển dụng sở hữu bài đăng)
+    """
+    job = db.session.get(JobPost, post_id)
+    if job is None:
+        abort(404, message="Bài đăng không tồn tại")
+    if job.employer_id != int(get_jwt_identity()):
+        abort(403, message="Bạn không có quyền sửa bài đăng này")
+
+    for field, value in data.items():
+        setattr(job, field, value)
+    db.session.commit()
+    return job
+
+
+@job_posts_bp.route("/<int:post_id>", methods=["DELETE"])
+@role_required(UserRole.EMPLOYER)
+@job_posts_bp.response(200, description="Xóa bài đăng thành công")
+def delete_job_post(post_id: int):
+    job = db.session.get(JobPost, post_id)
+    if job is None:
+        abort(404, message="Bài đăng không tồn tại")
+    if job.employer_id != int(get_jwt_identity()):
+        abort(403, message="Bạn không có quyền xóa bài đăng này")
+
+    db.session.delete(job)
+    db.session.commit()
+    return {"message": "Xóa bài đăng thành công"}

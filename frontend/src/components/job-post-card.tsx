@@ -6,6 +6,7 @@ import {
 	Trash2Icon,
 	Users2Icon,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,9 +41,11 @@ const STATUS_VARIANT: Record<
 export function JobPostCard({
 	post,
 	isManager,
+	onDeleteRequest,
 }: {
 	post: JobPost;
 	isManager?: boolean;
+	onDeleteRequest?: (post: JobPost) => void;
 }) {
 	return (
 		<Card className="gap-3 pt-2.75 shadow">
@@ -57,11 +60,19 @@ export function JobPostCard({
 
 				{isManager && (
 					<div className="flex items-center gap-2 ml-auto">
-						<Button variant="outline">
+						<Button
+							variant="outline"
+							render={<Link to={`/posts/${post.id}/edit`} state={{ post }} />}
+						>
 							<SquarePenIcon /> Chỉnh sửa
 						</Button>
 
-						<Button size="icon" variant="destructive">
+						<Button
+							size="icon"
+							variant="destructive"
+							aria-label={`Xoá bài đăng “${post.title}”`}
+							onClick={() => onDeleteRequest?.(post)}
+						>
 							<Trash2Icon />
 						</Button>
 					</div>

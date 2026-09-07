@@ -12,7 +12,13 @@ from sqlalchemy import select
 from src.extensions import db
 
 from .models import TokenBlocklist, User
-from .schemas import LoginRequest, RegisterRequest, TokenResponse
+from .schemas import (
+    LoginRequest,
+    ProfileUpdateRequest,
+    RegisterRequest,
+    TokenResponse,
+    UserResponse,
+)
 
 auth_bp = Blueprint(
     "auth",
@@ -91,8 +97,38 @@ def login(data):
             "email": user.email,
             "full_name": user.full_name,
             "role": user.role.value,
+            "company_name": user.company_name,
+            "company_website": user.company_website,
         },
     }, 200
+
+
+@auth_bp.route("/profile", methods=["GET"])
+@jwt_required()
+@auth_bp.response(200, schema=UserResponse, description="Thông tin tài khoản hiện tại")
+def get_profile():
+    """Xem thông tin tài khoản của chính mình (bao gồm thông tin công ty)"""
+    user = db.session.get(User, int(get_jwt_identity()))
+    if user is None:
+        abort(404, message="Người dùng không tồn tại")
+    return user
+
+
+@auth_bp.route("/profile", methods=["PUT"])
+@jwt_required()
+@auth_bp.arguments(ProfileUpdateRequest)
+@auth_bp.response(200, schema=UserResponse, description="Cập nhật thông tin tài khoản")
+def update_profile(data):
+    """Cập nhật thông tin tài khoản của chính mình (vd: tên công ty, website)"""
+    user = db.session.get(User, int(get_jwt_identity()))
+    if user is None:
+        abort(404, message="Người dùng không tồn tại")
+
+    for field in ("full_name", "phone", "company_name", "company_website"):
+        if field in data:
+            setattr(user, field, data[field])
+    db.session.commit()
+    return user
 
 
 @auth_bp.route("/logout", methods=["POST"])

@@ -21,7 +21,7 @@ import { Separator } from "./ui/separator";
 
 export function Header() {
 	return (
-		<header className="sticky top-0 z-40 border-b bg-background shadow">
+		<header className="sticky top-0 z-40 border-b bg-secondary/30 backdrop-blur shadow">
 			<div className="mx-auto flex h-14 w-full max-w-7xl items-center gap-4 px-4">
 				<Link to="/" className="font-bold text-lg">
 					💼 JobPortal
