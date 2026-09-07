@@ -51,7 +51,9 @@ export function JobPostCard({
 	return (
 		<Card className="gap-3 pt-2.75 shadow">
 			<CardHeader className="flex items-center gap-3">
-				<CardTitle className="text-base">{post.title}</CardTitle>
+				<CardTitle className="text-base hover:underline hover:text-primary transition-colors">
+					<Link to={`/posts/${post.id}`}>{post.title}</Link>
+				</CardTitle>
 
 				{isManager && (
 					<Badge variant={STATUS_VARIANT[post.status]}>
