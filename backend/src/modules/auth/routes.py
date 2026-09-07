@@ -1,11 +1,27 @@
 from flask import abort, jsonify
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    get_jwt,
+    get_jwt_identity,
+    jwt_required,
+)
 from flask_smorest import Blueprint
+from flask_smorest import abort as smorest_abort
 from sqlalchemy import select
+
 from src.extensions import db
 
-from .models import User, TokenBlocklist
-from .schemas import LoginRequest, RegisterRequest, TokenResponse
+from .enums import UserRole
+from .models import TokenBlocklist, User
+from .schemas import (
+    EmployerPublicInfo,
+    LoginRequest,
+    ProfileUpdateRequest,
+    RegisterRequest,
+    TokenResponse,
+    UserResponse,
+)
 
 auth_bp = Blueprint(
     "auth",
@@ -56,15 +72,24 @@ def login(data):
     ).one_or_none()
 
     if not user or not user.check_password(data["password"]):
-        abort(401, response=jsonify({
-            "code": "invalid_credentials",
-            "message": "Email hoặc mật khẩu không đúng!"
-        }))
+        abort(
+            401,
+            response=jsonify(
+                {
+                    "code": "invalid_credentials",
+                    "message": "Email hoặc mật khẩu không đúng!",
+                }
+            ),
+        )
 
     additional_claims = {"role": user.role.value, "email": user.email}
 
-    access_token = create_access_token(identity=str(user.id), additional_claims=additional_claims)
-    refresh_token = create_refresh_token(identity=str(user.id), additional_claims=additional_claims)
+    access_token = create_access_token(
+        identity=str(user.id), additional_claims=additional_claims
+    )
+    refresh_token = create_refresh_token(
+        identity=str(user.id), additional_claims=additional_claims
+    )
 
     return {
         "access_token": access_token,
@@ -75,8 +100,51 @@ def login(data):
             "email": user.email,
             "full_name": user.full_name,
             "role": user.role.value,
+            "company_name": user.company_name,
+            "company_website": user.company_website,
         },
     }, 200
+
+
+@auth_bp.route("/profile", methods=["GET"])
+@jwt_required()
+@auth_bp.response(200, schema=UserResponse, description="Thông tin tài khoản hiện tại")
+def get_profile():
+    """Xem thông tin tài khoản của chính mình (bao gồm thông tin công ty)"""
+    user = db.session.get(User, int(get_jwt_identity()))
+    if user is None:
+        smorest_abort(404, message="Người dùng không tồn tại")
+    return user
+
+
+@auth_bp.route("/profile", methods=["PUT"])
+@jwt_required()
+@auth_bp.arguments(ProfileUpdateRequest)
+@auth_bp.response(200, schema=UserResponse, description="Cập nhật thông tin tài khoản")
+def update_profile(data):
+    """Cập nhật thông tin tài khoản của chính mình (vd: tên công ty, website)"""
+    user = db.session.get(User, int(get_jwt_identity()))
+    if user is None:
+        smorest_abort(404, message="Người dùng không tồn tại")
+
+    for field in ("full_name", "phone", "company_name", "company_website"):
+        if field in data:
+            setattr(user, field, data[field])
+    db.session.commit()
+    return user
+
+
+@auth_bp.route("/profile/<int:user_id>", methods=["GET"])
+@auth_bp.response(
+    200, schema=EmployerPublicInfo, description="Thông tin công khai của nhà tuyển dụng (trang công ty)"
+)
+def get_public_employer_profile(user_id: int):
+    """Xem thông tin công khai của nhà tuyển dụng — không cần đăng nhập"""
+    user = db.session.get(User, user_id)
+    if user is None or user.role != UserRole.EMPLOYER:
+        smorest_abort(404, message="Không tìm thấy nhà tuyển dụng")
+    return user
+
 
 @auth_bp.route("/logout", methods=["POST"])
 @jwt_required()
@@ -97,5 +165,7 @@ def refresh():
     claims = get_jwt()
     additional_claims = {"role": claims.get("role"), "email": claims.get("email")}
 
-    new_access_token = create_access_token(identity=current_user_id, additional_claims=additional_claims)
-    return {"access_token": new_access_token, "token_type": "Bearer"}, 200
+    new_access_token = create_access_token(
+        identity=current_user_id, additional_claims=additional_claims
+    )
+    return {"access_token": new_access_token, "token_type": "Bearer"}, 201

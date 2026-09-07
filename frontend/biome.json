@@ -1,0 +1,34 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.5.11/schema.json",
+	"files": {
+		"includes": ["**", "!!**/dist"]
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		},
+		"formatter": {
+			"indentStyle": "space",
+			"indentWidth": 2
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["src/components/ui/field.tsx"],
+			"linter": {
+				"rules": {
+					"a11y": {
+						"useSemanticElements": "off"
+					}
+				}
+			}
+		}
+	],
+	"linter": {
+		"rules": {
+			"nursery": {
+				"useSortedClasses": "off"
+			}
+		}
+	}
+}

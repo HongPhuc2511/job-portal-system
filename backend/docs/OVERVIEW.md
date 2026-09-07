@@ -34,6 +34,8 @@ pip install -r requirements.txt
 
 set FLASK_APP=run.py
 flask db upgrade
+
+python -m src.seed # Chạy seed để nạp dữ liệu mẫu vào database
 ```
 
 #### Chạy ứng dụng chế độ develop
