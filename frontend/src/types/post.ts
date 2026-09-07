@@ -1,3 +1,4 @@
+import type { EmployerPublicProfile } from "./employer";
 import type { District, Province } from "./location";
 
 export type JobPostStatus = "ACTIVE" | "CLOSED" | "EXPIRED";
@@ -84,5 +85,6 @@ export type JobPost = {
 	district: District;
 	address: string;
 	employer_id: number;
+	employer: EmployerPublicProfile;
 	display_salary: string;
 };

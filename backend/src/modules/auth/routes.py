@@ -7,12 +7,15 @@ from flask_jwt_extended import (
     jwt_required,
 )
 from flask_smorest import Blueprint
+from flask_smorest import abort as smorest_abort
 from sqlalchemy import select
 
 from src.extensions import db
 
+from .enums import UserRole
 from .models import TokenBlocklist, User
 from .schemas import (
+    EmployerPublicInfo,
     LoginRequest,
     ProfileUpdateRequest,
     RegisterRequest,
@@ -110,7 +113,7 @@ def get_profile():
     """Xem thông tin tài khoản của chính mình (bao gồm thông tin công ty)"""
     user = db.session.get(User, int(get_jwt_identity()))
     if user is None:
-        abort(404, message="Người dùng không tồn tại")
+        smorest_abort(404, message="Người dùng không tồn tại")
     return user
 
 
@@ -122,12 +125,24 @@ def update_profile(data):
     """Cập nhật thông tin tài khoản của chính mình (vd: tên công ty, website)"""
     user = db.session.get(User, int(get_jwt_identity()))
     if user is None:
-        abort(404, message="Người dùng không tồn tại")
+        smorest_abort(404, message="Người dùng không tồn tại")
 
     for field in ("full_name", "phone", "company_name", "company_website"):
         if field in data:
             setattr(user, field, data[field])
     db.session.commit()
+    return user
+
+
+@auth_bp.route("/profile/<int:user_id>", methods=["GET"])
+@auth_bp.response(
+    200, schema=EmployerPublicInfo, description="Thông tin công khai của nhà tuyển dụng (trang công ty)"
+)
+def get_public_employer_profile(user_id: int):
+    """Xem thông tin công khai của nhà tuyển dụng — không cần đăng nhập"""
+    user = db.session.get(User, user_id)
+    if user is None or user.role != UserRole.EMPLOYER:
+        smorest_abort(404, message="Không tìm thấy nhà tuyển dụng")
     return user
 
 

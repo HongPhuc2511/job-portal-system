@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from flask import abort, request
+from flask import request
 from flask_jwt_extended import get_jwt_identity
+from flask_smorest import abort
 from flask_smorest.blueprint import Blueprint
 from flask_smorest.pagination import PaginationParameters
 from sqlalchemy import and_, func, or_, select

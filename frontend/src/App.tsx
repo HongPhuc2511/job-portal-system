@@ -11,6 +11,7 @@ import Register from "@/pages/register";
 import ResumeBuilder from "@/pages/resume_builder";
 import ResumeDetailPage from "@/pages/resume_detail";
 import Resumes from "@/pages/resumes";
+import CompanyProfilePage from "./pages/company-profile";
 
 export function App() {
 	return (
@@ -57,6 +58,8 @@ export function App() {
 							</ProtectedRoute>
 						}
 					/>
+
+					<Route path="/companies/:id" element={<CompanyProfilePage />} />
 				</Routes>
 			</AuthProvider>
 		</BrowserRouter>

@@ -1,3 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
+import type { EmployerPublicProfile } from "@/types/employer";
 import axiosClient from "./axiosClient";
 
 export type Role = "seeker" | "employer";
@@ -45,3 +47,16 @@ export const refreshToken = (refresh_token: string) => {
 		headers: { Authorization: `Bearer ${refresh_token}` },
 	});
 };
+
+export function useGetEmployerPublicProfile(userId: number) {
+	return useQuery({
+		queryKey: ["employer-public-profile", userId],
+		queryFn: async () => {
+			const response = await axiosClient.get<EmployerPublicProfile>(
+				`/auth/profile/${userId}`,
+			);
+			return response.data;
+		},
+		enabled: Number.isInteger(userId) && userId > 0,
+	});
+}
