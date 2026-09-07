@@ -18,7 +18,7 @@ export function JobCard({ job }: { job: Job }) {
 					</span>
 					<span className="inline-flex items-center gap-1.5">
 						<Wallet className="size-4" />
-						{job.salary ? `${job.salary} VNĐ` : "Thỏa thuận"}
+						{job.display_salary || job.salary || "Thỏa thuận"}
 					</span>
 				</div>
 				<p className="text-muted-foreground text-xs">
