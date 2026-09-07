@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Header } from "@/components/header";
+import Header from "@/components/header";
 import ProtectedRoute from "@/components/protected-route";
 import { AuthProvider } from "@/context/auth-context";
 import EmployerPostsPage from "@/pages/employer-posts";

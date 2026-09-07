@@ -18,6 +18,7 @@ export function useGetJobPosts({
 		provinceId: number | null;
 		jobType: string | null;
 		salary: number | null;
+		keyword: string | null;
 	};
 	page: number;
 	pageSize: number;
@@ -32,6 +33,7 @@ export function useGetJobPosts({
 					province_id: filter?.provinceId,
 					job_type: filter?.jobType,
 					salary: filter?.salary,
+					keyword: filter?.keyword,
 				},
 			});
 

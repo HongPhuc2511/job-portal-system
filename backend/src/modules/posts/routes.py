@@ -11,6 +11,7 @@ from sqlalchemy.orm import joinedload
 from src.extensions import db
 from src.modules.auth.decorators import role_required
 from src.modules.auth.enums import UserRole
+from src.modules.auth.models import User
 
 from .enums import JobPostStatus
 from .models import JobPost
@@ -29,8 +30,9 @@ job_posts_bp = Blueprint(
 @job_posts_bp.paginate()
 def get_latest_jobs(pagination_parameters: PaginationParameters):
     """
-    Lấy các bài tuyển dụng mới nhất (Có hỗ trợ lọc theo tiêu chí)
+    Lấy các bài tuyển dụng mới nhất (Có hỗ trợ lọc theo tiêu chí và tìm kiếm từ khoá)
     """
+    keyword = (request.args.get("keyword") or "").strip()
     province_id = request.args.get("province_id", type=int)
     job_type = request.args.get("job_type", type=str)
     salary = request.args.get("salary", type=int)
@@ -39,6 +41,16 @@ def get_latest_jobs(pagination_parameters: PaginationParameters):
         JobPost.status == JobPostStatus.ACTIVE,
         JobPost.deadline >= datetime.now(),
     ]
+
+    if keyword:
+        pattern = f"%{keyword}%"
+        filters.append(
+            or_(
+                JobPost.title.ilike(pattern),
+                JobPost.description.ilike(pattern),
+                JobPost.employer.has(User.company_name.ilike(pattern)),
+            )
+        )
 
     if province_id:
         filters.append(JobPost.province_id == province_id)
