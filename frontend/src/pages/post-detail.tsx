@@ -87,17 +87,20 @@ export default function PostDetailPage() {
 									<BadgeDollarSignIcon className="size-5" />
 									{formatSalary(post.salary_min, post.salary_max)}
 								</Description>
+
 								<Description>
 									<MapPinIcon className="size-5" />
 									{isRemote
 										? "Toàn Quốc"
 										: `${post.district.name}, ${post.province.name}`}
 								</Description>
+
 								<Description>
 									<BriefcaseIcon className="size-5" />
 									{JOB_TYPES_MAP[post.job_type]} -{" "}
 									{WORK_MODELS_MAP[post.work_model]}
 								</Description>
+
 								<Description>
 									<CalendarClockIcon className="size-5" />
 									Hạn nộp: {formatDisplayDate(post.deadline)} (Còn{" "}
@@ -119,7 +122,6 @@ export default function PostDetailPage() {
 					</Card>
 				</div>
 
-				{/* Cột bên phải (Sidebar) */}
 				<div className="space-y-6">
 					<Card>
 						<CardContent className="p-4 space-y-4">
@@ -154,7 +156,6 @@ export default function PostDetailPage() {
 						</CardContent>
 					</Card>
 				</div>
-				<div className="space-y-6"></div>
 			</div>
 		</main>
 	);
