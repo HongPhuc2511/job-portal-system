@@ -5,6 +5,7 @@ import {
 	CalendarClockIcon,
 	ChevronLeftIcon,
 	MapPinIcon,
+	Users2Icon,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useGetJobPost } from "@/api/post-api";
@@ -12,10 +13,15 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Description } from "@/components/ui/description";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { calculateRemainingDays, formatDisplayDate } from "@/lib/datetime";
 import { formatSalary } from "@/lib/salary";
-import { JOB_TYPES_MAP, WORK_MODELS_MAP } from "@/types/post";
+import {
+	EXPERIENCE_LEVELS_MAP,
+	JOB_TYPES_MAP,
+	WORK_MODELS_MAP,
+} from "@/types/post";
 
 export default function PostDetailPage() {
 	const { id } = useParams();
@@ -113,7 +119,41 @@ export default function PostDetailPage() {
 					</Card>
 				</div>
 
-				{/* Chỗ trống cho Sidebar */}
+				{/* Cột bên phải (Sidebar) */}
+				<div className="space-y-6">
+					<Card>
+						<CardContent className="p-4 space-y-4">
+							<Button size="lg" className="w-full text-base font-semibold">
+								Ứng tuyển ngay
+							</Button>
+							<p className="text-center text-xs text-muted-foreground">
+								CV của bạn sẽ được gửi trực tiếp đến nhà tuyển dụng.
+							</p>
+						</CardContent>
+					</Card>
+
+					<Card>
+						<CardHeader>
+							<CardTitle className="text-base">Yêu cầu chung</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-4 text-sm">
+							<div>
+								<p className="text-muted-foreground mb-1">Cấp độ</p>
+								<p className="font-medium">
+									{EXPERIENCE_LEVELS_MAP[post.experience_level]}
+								</p>
+							</div>
+							<Separator />
+							<div>
+								<p className="text-muted-foreground mb-1">Số lượng tuyển</p>
+								<p className="font-medium flex items-center gap-1.5">
+									<Users2Icon className="size-4" />
+									{post.head_count} người
+								</p>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
 				<div className="space-y-6"></div>
 			</div>
 		</main>
