@@ -97,3 +97,14 @@ export function useDeletePost() {
 		},
 	});
 }
+
+export function useGetJobPost(postId: number) {
+	return useQuery({
+		queryKey: ["job-post", postId],
+		queryFn: async () => {
+			const response = await axiosClient.get<JobPost>(`/posts/${postId}`);
+			return response.data;
+		},
+		enabled: Number.isInteger(postId) && postId > 0,
+	});
+}
