@@ -3,11 +3,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useGetEmployerPosts } from "@/api/post-api";
 import { AutoPagination } from "@/components/auto-pagination";
-import { JobPostCard } from "@/components/job-post-card";
+import { JobPostCard, JobPostSkeletons } from "@/components/job-post-card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/context/auth-context";
 import type { JobPost } from "@/types/post";
 
@@ -41,7 +39,7 @@ function EmployerPostList({ employerId }: { employerId: number }) {
 	const [page, setPage] = useState(1);
 	const postsQuery = useGetEmployerPosts(employerId, page);
 
-	if (postsQuery.status === "pending") return <PostListSkeleton />;
+	if (postsQuery.status === "pending") return <JobPostSkeletons />;
 
 	if (postsQuery.status === "error")
 		return (
@@ -73,22 +71,5 @@ function EmployerPostList({ employerId }: { employerId: number }) {
 				<AutoPagination pagination={pagination} goToPage={goToPage} />
 			</div>
 		</>
-	);
-}
-
-function PostListSkeleton() {
-	return (
-		<div className="flex flex-col gap-4">
-			{[...Array(15)].map((_, index) => (
-				<Card key={index} className="h-38">
-					<CardContent className="flex flex-col gap-3">
-						<Skeleton className="h-6 w-1/3" />
-						<Skeleton className="h-4 w-1/2" />
-						<Skeleton className="h-4 w-2/3" />
-						<Skeleton className="mt-2 h-6 w-full" />
-					</CardContent>
-				</Card>
-			))}
-		</div>
 	);
 }

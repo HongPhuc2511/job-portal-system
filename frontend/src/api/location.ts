@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { District, Province } from "@/types/address";
+import type { District, Province } from "@/types/location";
 import axiosClient from "./axiosClient";
 
 export function useProvinces() {

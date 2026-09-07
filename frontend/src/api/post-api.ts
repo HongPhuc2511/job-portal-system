@@ -18,6 +18,40 @@ export function useCreatePost() {
 	});
 }
 
+export function useGetJobPosts({
+	filter,
+	page,
+	pageSize = 10,
+}: {
+	filter?: {
+		provinceId: number | null;
+		jobType: string | null;
+		salary: number | null;
+	};
+	page: number;
+	pageSize: number;
+}): UseQueryResult<Page<JobPost>> {
+	return useQuery({
+		queryKey: [`job-posts`, { page, pageSize, filter }],
+		queryFn: async () => {
+			const response = await axiosClient.get(`/posts/`, {
+				params: {
+					page,
+					page_size: pageSize,
+					province_id: filter?.provinceId,
+					job_type: filter?.jobType,
+					salary: filter?.salary,
+				},
+			});
+
+			return {
+				items: response.data,
+				pagination: JSON.parse(response.headers["x-pagination"]),
+			};
+		},
+	});
+}
+
 export function useGetEmployerPosts(
 	employerId: number,
 	page: number,
@@ -29,8 +63,6 @@ export function useGetEmployerPosts(
 			const response = await axiosClient.get(`/posts/employer/${employerId}`, {
 				params: { page, page_size: pageSize },
 			});
-
-			console.log(response.headers);
 
 			return {
 				items: response.data,
