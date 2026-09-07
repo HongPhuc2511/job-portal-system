@@ -101,7 +101,16 @@ export default function PostDetailPage() {
 						</CardContent>
 					</Card>
 
-					{/* Chỗ trống cho phần mô tả */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="text-lg">Chi tiết tin tuyển dụng</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="whitespace-pre-wrap text-sm/relaxed">
+								{post.description}
+							</div>
+						</CardContent>
+					</Card>
 				</div>
 
 				{/* Chỗ trống cho Sidebar */}
