@@ -29,6 +29,16 @@ class ProfileUpdateRequest(Schema):
     company_website = fields.String()
 
 
+class EmployerPublicInfo(Schema):
+    """Thông tin công khai của nhà tuyển dụng — hiển thị trên trang công ty"""
+
+    id = fields.Integer()
+    full_name = fields.String()
+    company_name = fields.String()
+    company_website = fields.String()
+    phone = fields.String()
+
+
 class LoginRequest(Schema):
     email = fields.Email(required=True)
     password = fields.String(required=True)

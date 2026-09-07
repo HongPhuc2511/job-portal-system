@@ -1,8 +1,8 @@
 """init
 
-Revision ID: cb7d0803d2cb
+Revision ID: 07396458e540
 Revises: 
-Create Date: 2026-09-05 09:29:58.968057
+Create Date: 2026-09-07 15:21:55.278630
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'cb7d0803d2cb'
+revision = '07396458e540'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -61,7 +61,9 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=150), nullable=False),
-    sa.Column('file_path', sa.String(length=255), nullable=False),
+    sa.Column('resume_type', sa.Enum('UPLOAD', 'BUILDER', name='resumetype'), nullable=False),
+    sa.Column('file_path', sa.String(length=255), nullable=True),
+    sa.Column('content', sa.JSON(), nullable=True),
     sa.Column('parsed_text', sa.Text(), nullable=True),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
@@ -77,7 +79,6 @@ def upgrade():
     sa.Column('deadline', sa.DateTime(), nullable=False),
     sa.Column('title', sa.String(length=200), nullable=False),
     sa.Column('description', sa.Text(), nullable=False),
-    sa.Column('requirements', sa.Text(), nullable=True),
     sa.Column('head_count', sa.Integer(), nullable=True),
     sa.Column('experience_level', sa.Enum('INTERN', 'FRESHER', 'JUNIOR', 'MIDDLE', 'SENIOR', 'LEAD', name='experiencelevel'), nullable=False),
     sa.Column('work_model', sa.Enum('ON_SITE', 'REMOTE', 'HYBRID', name='workmodel'), nullable=False),

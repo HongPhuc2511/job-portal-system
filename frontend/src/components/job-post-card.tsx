@@ -1,5 +1,6 @@
 import {
 	BadgeDollarSignIcon,
+	BuildingIcon,
 	ClockIcon,
 	MapPinIcon,
 	SquarePenIcon,
@@ -80,6 +81,16 @@ export function JobPostCard({
 			</CardHeader>
 
 			<CardContent className="-mt-2 space-y-2">
+				<Description>
+					<Link
+						to={`/companies/${post.employer.id}`}
+						className="flex items-center gap-1 hover:underline"
+					>
+						<BuildingIcon />
+						{post.employer.company_name}
+					</Link>
+				</Description>
+
 				<Description className="font-medium text-green-700">
 					<BadgeDollarSignIcon />
 					{formatSalary(post.salary_min, post.salary_max)}
@@ -130,7 +141,7 @@ export function JobPostSkeletons() {
 	return (
 		<div className="flex flex-col gap-4">
 			{[...Array(15)].map((_, index) => (
-				<Card key={index} className="h-38">
+				<Card key={index} className="h-43">
 					<CardContent className="flex flex-col gap-3">
 						<Skeleton className="h-6 w-1/3" />
 						<Skeleton className="h-4 w-1/2" />

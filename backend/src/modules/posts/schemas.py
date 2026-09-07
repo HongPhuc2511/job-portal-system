@@ -94,11 +94,11 @@ class JobPostRequest(Schema):
 
 
 class EmployerInfo(SQLAlchemyAutoSchema):
-    """Thông tin nhà tuyển dụng gắn với bài đăng (chủ yếu để hiển thị tên công ty)"""
+    """Thông tin nhà tuyển dụng gắn với bài đăng (tên công ty + người liên hệ)"""
 
     class Meta:
         model = User
-        fields = ("id", "full_name", "company_name", "company_website")
+        fields = ("id", "full_name", "phone", "company_name", "company_website")
 
 
 class JobPostResponse(SQLAlchemyAutoSchema):
