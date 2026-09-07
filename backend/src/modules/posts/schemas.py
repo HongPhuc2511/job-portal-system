@@ -9,6 +9,7 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from sqlalchemy import select
 
 from src.extensions import db
+from src.modules.auth.models import User
 from src.modules.location import District, Province
 from src.modules.location.schemas import DistrictResponse, ProvinceResponse
 
@@ -92,6 +93,14 @@ class JobPostRequest(Schema):
             )
 
 
+class EmployerInfo(SQLAlchemyAutoSchema):
+    """Thông tin nhà tuyển dụng gắn với bài đăng (chủ yếu để hiển thị tên công ty)"""
+
+    class Meta:
+        model = User
+        fields = ("id", "full_name", "company_name", "company_website")
+
+
 class JobPostResponse(SQLAlchemyAutoSchema):
     class Meta:
         model = JobPost
@@ -106,6 +115,7 @@ class JobPostResponse(SQLAlchemyAutoSchema):
             "description": "Mức lương đã được format",
         },
     )
+    employer = fields.Nested(EmployerInfo, dump_only=True)
 
     province = fields.Nested(ProvinceResponse, dump_only=True)
     district = fields.Nested(DistrictResponse, dump_only=True)

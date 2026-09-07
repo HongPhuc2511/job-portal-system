@@ -6,6 +6,7 @@ import EmployerPostsPage from "@/pages/employer-posts";
 import { Home } from "@/pages/home";
 import Login from "@/pages/login";
 import PostCreatePage from "@/pages/post-create";
+import PostEditPage from "@/pages/post-edit";
 import Register from "@/pages/register";
 import ResumeBuilder from "@/pages/resume_builder";
 import ResumeDetailPage from "@/pages/resume_detail";
@@ -48,6 +49,14 @@ export function App() {
 
 					<Route path="/posts" element={<EmployerPostsPage />} />
 					<Route path="/posts/create" element={<PostCreatePage />} />
+					<Route
+						path="/posts/:id/edit"
+						element={
+							<ProtectedRoute>
+								<PostEditPage />
+							</ProtectedRoute>
+						}
+					/>
 				</Routes>
 			</AuthProvider>
 		</BrowserRouter>

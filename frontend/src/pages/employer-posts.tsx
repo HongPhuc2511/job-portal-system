@@ -1,12 +1,26 @@
-import { PlusIcon } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { PlusIcon, TriangleAlertIcon } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useGetEmployerPosts } from "@/api/post-api";
+import { useDeletePost, useGetEmployerPosts } from "@/api/post-api";
 import { AutoPagination } from "@/components/auto-pagination";
 import { JobPostCard, JobPostSkeletons } from "@/components/job-post-card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogMedia,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 import { useAuth } from "@/context/auth-context";
+import { extractBackendErrors } from "@/lib/backend-error";
 import type { JobPost } from "@/types/post";
 
 export default function EmployerPostsPage() {
@@ -19,7 +33,7 @@ export default function EmployerPostsPage() {
 	}
 
 	return (
-		<main className="mx-auto max-w-5xl pt-4">
+		<main className="mx-auto max-w-3xl pt-4">
 			<div className="flex items-center justify-between gap-4">
 				<h3 className="font-bold text-lg">Quản lý bài đăng</h3>
 				<Button render={<Link to="/posts/create" />}>
@@ -38,6 +52,9 @@ export default function EmployerPostsPage() {
 function EmployerPostList({ employerId }: { employerId: number }) {
 	const [page, setPage] = useState(1);
 	const postsQuery = useGetEmployerPosts(employerId, page);
+	const queryClient = useQueryClient();
+
+	const [postToDelete, setPostToDelete] = useState<JobPost | null>(null);
 
 	if (postsQuery.status === "pending") return <JobPostSkeletons />;
 
@@ -59,17 +76,125 @@ function EmployerPostList({ employerId }: { employerId: number }) {
 		window.scrollTo({ top: 0, behavior: "smooth" });
 	};
 
+	const handlePostDeleted = () => {
+		// Nếu trang hiện tại chỉ có đúng bài đang xoá thì lùi về trang trước,
+		// tránh rơi vào một trang trống sau khi xoá.
+		const itemCount = postsQuery.data?.items.length ?? 0;
+		if (itemCount === 1 && page > 1) {
+			setPage(page - 1);
+		}
+
+		setPostToDelete(null);
+		queryClient.invalidateQueries({
+			queryKey: ["employer-posts", { employerId }],
+		});
+	};
+
 	return (
 		<>
 			<div className="flex flex-col gap-4">
-				{posts.map((post) => (
-					<JobPostCard key={post.id} post={post} isManager />
-				))}
+				{posts.length === 0 ? (
+					<p className="py-8 text-center text-muted-foreground">
+						Chưa có bài đăng nào.
+					</p>
+				) : (
+					posts.map((post) => (
+						<JobPostCard
+							key={post.id}
+							post={post}
+							isManager
+							onDeleteRequest={setPostToDelete}
+						/>
+					))
+				)}
 			</div>
 
 			<div className="mt-6">
 				<AutoPagination pagination={pagination} goToPage={goToPage} />
 			</div>
+
+			<DeletingDialog
+				key={postToDelete?.id ?? 0}
+				post={postToDelete}
+				onOpenChange={(open) => {
+					if (!open) setPostToDelete(null);
+				}}
+				onDeleted={handlePostDeleted}
+			/>
 		</>
+	);
+}
+
+function DeletingDialog({
+	post,
+	onOpenChange,
+	onDeleted,
+}: {
+	post: JobPost | null;
+	onOpenChange: (open: boolean) => void;
+	onDeleted?: (post: JobPost) => void;
+}) {
+	const deletePost = useDeletePost();
+	const [deleteError, setDeleteError] = useState<string | null>(null);
+	const open = post != null;
+
+	const handleOpenChange = (nextOpen: boolean) => {
+		// Không cho đóng dialog (Esc/bấm ra ngoài) trong lúc đang xoá.
+		if (!nextOpen && deletePost.isPending) return;
+		onOpenChange(nextOpen);
+	};
+
+	const confirmDelete = async () => {
+		if (!post) return;
+		setDeleteError(null);
+		try {
+			await deletePost.mutateAsync(post.id);
+			toast.add({ type: "success", title: "Xoá bài đăng thành công" });
+			onDeleted?.(post);
+		} catch (rawError) {
+			const error = extractBackendErrors(rawError);
+			setDeleteError(
+				error.globalErrors[0] ?? "Xoá bài đăng thất bại. Vui lòng thử lại.",
+			);
+		}
+	};
+
+	return (
+		<AlertDialog open={open} onOpenChange={handleOpenChange}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogMedia>
+						<TriangleAlertIcon className="text-destructive" />
+					</AlertDialogMedia>
+					<AlertDialogTitle>Xoá bài đăng?</AlertDialogTitle>
+					<AlertDialogDescription>
+						Bạn có chắc chắn muốn xoá bài đăng “{post?.title}”? Hành động này
+						không thể hoàn tác.
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+
+				{deleteError && (
+					<p
+						role="alert"
+						className="text-center text-sm font-medium text-destructive"
+					>
+						{deleteError}
+					</p>
+				)}
+
+				<AlertDialogFooter>
+					<AlertDialogCancel disabled={deletePost.isPending}>
+						Huỷ bỏ
+					</AlertDialogCancel>
+					<AlertDialogAction
+						variant="destructive"
+						disabled={deletePost.isPending}
+						onClick={confirmDelete}
+					>
+						{deletePost.isPending ? "Đang xoá..." : "Xoá bài đăng"}
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	);
 }

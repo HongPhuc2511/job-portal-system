@@ -9,15 +9,6 @@ import type { Page } from "@/types/paginate";
 import type { JobPost } from "@/types/post";
 import axiosClient from "./axiosClient";
 
-export function useCreatePost() {
-	return useMutation({
-		mutationFn: async (data: InferOutput<typeof PostSchema>) => {
-			const response = await axiosClient.post("/posts/", data);
-			return response.data;
-		},
-	});
-}
-
 export function useGetJobPosts({
 	filter,
 	page,
@@ -68,6 +59,39 @@ export function useGetEmployerPosts(
 				items: response.data,
 				pagination: JSON.parse(response.headers["x-pagination"]),
 			};
+		},
+	});
+}
+
+export function useCreatePost() {
+	return useMutation({
+		mutationFn: async (data: InferOutput<typeof PostSchema>) => {
+			const response = await axiosClient.post<JobPost>("/posts/", data);
+			return response.data;
+		},
+	});
+}
+
+export function useUpdatePost() {
+	return useMutation({
+		mutationFn: async ({
+			postId,
+			data,
+		}: {
+			postId: number;
+			data: InferOutput<typeof PostSchema>;
+		}) => {
+			const response = await axiosClient.put<JobPost>(`/posts/${postId}`, data);
+			return response.data;
+		},
+	});
+}
+
+export function useDeletePost() {
+	return useMutation({
+		mutationFn: async (postId: number) => {
+			const response = await axiosClient.delete<void>(`/posts/${postId}`);
+			return response.data;
 		},
 	});
 }

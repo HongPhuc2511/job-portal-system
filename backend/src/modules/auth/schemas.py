@@ -6,6 +6,8 @@ class UserResponse(Schema):
     email = fields.Email()
     full_name = fields.String()
     role = fields.String()
+    company_name = fields.String()
+    company_website = fields.String()
 
 
 class RegisterRequest(Schema):
@@ -13,6 +15,15 @@ class RegisterRequest(Schema):
     password = fields.String(required=True, validate=validate.Length(min=6))
     full_name = fields.String(required=True, validate=validate.Length(min=2, max=100))
     role = fields.String(validate=validate.OneOf(["seeker", "employer"]))
+    phone = fields.String()
+    company_name = fields.String()
+    company_website = fields.String()
+
+
+class ProfileUpdateRequest(Schema):
+    """Cập nhật một phần thông tin tài khoản (chỉ gửi field cần sửa)"""
+
+    full_name = fields.String(validate=validate.Length(min=2, max=100))
     phone = fields.String()
     company_name = fields.String()
     company_website = fields.String()
