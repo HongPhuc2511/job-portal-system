@@ -2,8 +2,9 @@ from datetime import datetime
 
 from flask_jwt_extended import get_jwt_identity
 from flask_smorest.blueprint import Blueprint
-from sqlalchemy import select, or_, and_
+from sqlalchemy import select, or_, and_, func
 from flask import request
+from flask_smorest.pagination import PaginationParameters
 
 from src.extensions import db
 from src.modules.auth.decorators import role_required
@@ -36,14 +37,14 @@ def get_latest_jobs():
         .order_by(JobPost.id.desc())
         .limit(20)
         .where(
-            JobPost.status == JobPostStatus.ACTIVE, 
+            JobPost.status == JobPostStatus.ACTIVE,
             JobPost.deadline >= datetime.now()
         )
     )
 
     if province_id:
         stmt = stmt.where(JobPost.province_id == province_id)
-        
+
     if job_type:
         stmt = stmt.where(JobPost.job_type == job_type)
 
@@ -56,6 +57,24 @@ def get_latest_jobs():
             )
         )
 
+    return db.session.scalars(stmt).all()
+
+
+@job_posts_bp.route("/employer/<int:employer_id>", methods=["GET"])
+@job_posts_bp.response(200, schema=JobPostResponse(many=True))
+@job_posts_bp.paginate()
+def get_employer_posts(employer_id: int, pagination_parameters: PaginationParameters):
+    pagination_parameters.item_count = db.session.scalar(
+        select(func.count(JobPost.id)).where(JobPost.employer_id == employer_id)
+    )
+
+    stmt = (
+        select(JobPost)
+        .where(JobPost.employer_id == employer_id)
+        .order_by(JobPost.id.desc())
+        .offset(pagination_parameters.first_item)
+        .limit(pagination_parameters.page_size)
+    )
     return db.session.scalars(stmt).all()
 
 

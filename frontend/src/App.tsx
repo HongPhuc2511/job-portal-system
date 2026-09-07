@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Header } from "@/components/header";
 import ProtectedRoute from "@/components/protected-route";
 import { AuthProvider } from "@/context/auth-context";
+import EmployerPostsPage from "@/pages/employer-posts";
 import { Home } from "@/pages/home";
 import Login from "@/pages/login";
 import PostCreatePage from "@/pages/post-create";
@@ -45,6 +46,7 @@ export function App() {
 						}
 					/>
 
+					<Route path="/posts" element={<EmployerPostsPage />} />
 					<Route path="/posts/create" element={<PostCreatePage />} />
 				</Routes>
 			</AuthProvider>

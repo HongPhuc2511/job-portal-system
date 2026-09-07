@@ -19,6 +19,7 @@ def create_app() -> Flask:
         app,
         resources={r"/api/*": {"origins": "http://localhost:5173"}},
         supports_credentials=True,
+        expose_headers=["X-Pagination"],
     )
     app.config.from_object(Config)
 

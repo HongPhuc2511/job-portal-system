@@ -1,5 +1,11 @@
 export type JobPostStatus = "ACTIVE" | "CLOSED" | "EXPIRED";
 
+export const JOB_POST_STATUS_MAP: Record<JobPostStatus, string> = {
+	ACTIVE: "Đang tuyển",
+	CLOSED: "Đã đóng",
+	EXPIRED: "Hết hạn",
+};
+
 export const EXPERIENCE_LEVELS = [
 	"INTERN",
 	"FRESHER",
@@ -53,3 +59,26 @@ export const WORK_MODELS_MAP = {
 	HYBRID: "Làm từ xa và tại văn phòng",
 };
 export type WorkModel = (typeof WORK_MODELS)[number];
+
+export type JobPost = {
+	id: number;
+	created_at: string;
+	updated_at: string;
+	status: JobPostStatus;
+	published_at: string;
+	deadline: string;
+	title: string;
+	description: string;
+	head_count: number;
+	experience_level: ExperienceLevel;
+	work_model: WorkModel;
+	job_type: JobType;
+	salary_min: number;
+	salary_max: number;
+	salary_period: SalaryPeriod;
+	province_id: number;
+	district_id: number;
+	address: string;
+	employer_id: number;
+	display_salary: string;
+};
