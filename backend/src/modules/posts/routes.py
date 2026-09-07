@@ -155,3 +155,24 @@ def delete_job_post(post_id: int):
     db.session.delete(job)
     db.session.commit()
     return {"message": "Xóa bài đăng thành công"}
+
+@job_posts_bp.route("/<int:post_id>", methods=["GET"])
+@job_posts_bp.response(200, schema=JobPostResponse)
+def get_job_post(post_id: int):
+    """
+    Xem thông tin chi tiết của một bài đăng tuyển dụng (Public)
+    """
+    job = db.session.get(
+        JobPost, 
+        post_id,
+        options=[
+            joinedload(JobPost.province),
+            joinedload(JobPost.district),
+            joinedload(JobPost.employer),
+        ]
+    )
+    
+    if job is None:
+        abort(404, message="Bài đăng không tồn tại")
+        
+    return job
