@@ -1,3 +1,5 @@
+import type { District, Province } from "./location";
+
 export type JobPostStatus = "ACTIVE" | "CLOSED" | "EXPIRED";
 
 export const JOB_POST_STATUS_MAP: Record<JobPostStatus, string> = {
@@ -78,6 +80,8 @@ export type JobPost = {
 	salary_period: SalaryPeriod;
 	province_id: number;
 	district_id: number;
+	province: Province;
+	district: District;
 	address: string;
 	employer_id: number;
 	display_salary: string;

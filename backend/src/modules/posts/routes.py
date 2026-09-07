@@ -1,15 +1,11 @@
 from datetime import datetime
 
+from flask import request
 from flask_jwt_extended import get_jwt_identity
 from flask_smorest.blueprint import Blueprint
-<<<<<<< HEAD
-from sqlalchemy import select, or_, and_, func
-from flask import request
 from flask_smorest.pagination import PaginationParameters
-=======
-from flask_smorest.pagination import PaginationParameters
-from sqlalchemy import func, select
->>>>>>> d280ef9 (Thêm trang quản lý bài đăng của nhà tuyển dụng)
+from sqlalchemy import and_, func, or_, select
+from sqlalchemy.orm import joinedload
 
 from src.extensions import db
 from src.modules.auth.decorators import role_required
@@ -29,53 +25,42 @@ job_posts_bp = Blueprint(
 
 @job_posts_bp.route("/", methods=["GET"])
 @job_posts_bp.response(200, schema=JobPostResponse(many=True))
-def get_latest_jobs():
+@job_posts_bp.paginate()
+def get_latest_jobs(pagination_parameters: PaginationParameters):
     """
-    Lấy 20 bài tuyển dụng mới nhất (Có hỗ trợ lọc theo tiêu chí)
+    Lấy các bài tuyển dụng mới nhất (Có hỗ trợ lọc theo tiêu chí)
     """
     province_id = request.args.get("province_id", type=int)
     job_type = request.args.get("job_type", type=str)
     salary = request.args.get("salary", type=int)
 
-    stmt = (
-        select(JobPost)
-        .order_by(JobPost.id.desc())
-        .limit(20)
-        .where(
-            JobPost.status == JobPostStatus.ACTIVE,
-            JobPost.deadline >= datetime.now()
-        )
-    )
+    filters = [
+        JobPost.status == JobPostStatus.ACTIVE,
+        JobPost.deadline >= datetime.now(),
+    ]
 
     if province_id:
-        stmt = stmt.where(JobPost.province_id == province_id)
+        filters.append(JobPost.province_id == province_id)
 
     if job_type:
-        stmt = stmt.where(JobPost.job_type == job_type)
+        filters.append(JobPost.job_type == job_type)
 
     if salary:
-        stmt = stmt.where(
+        filters.append(
             or_(
-                JobPost.salary_max >= salary,
-                JobPost.salary_min >= salary,
-                and_(JobPost.salary_max.is_(None), JobPost.salary_min.is_(None))
+                and_(salary >= JobPost.salary_min, salary <= JobPost.salary_max),
+                and_(JobPost.salary_max.is_(None), JobPost.salary_min.is_(None)),
             )
         )
 
-    return db.session.scalars(stmt).all()
-
-
-@job_posts_bp.route("/employer/<int:employer_id>", methods=["GET"])
-@job_posts_bp.response(200, schema=JobPostResponse(many=True))
-@job_posts_bp.paginate()
-def get_employer_posts(employer_id: int, pagination_parameters: PaginationParameters):
     pagination_parameters.item_count = db.session.scalar(
-        select(func.count(JobPost.id)).where(JobPost.employer_id == employer_id)
+        select(func.count(JobPost.id)).where(*filters)
     )
 
     stmt = (
         select(JobPost)
-        .where(JobPost.employer_id == employer_id)
+        .options(joinedload(JobPost.province), joinedload(JobPost.district))
+        .where(*filters)
         .order_by(JobPost.id.desc())
         .offset(pagination_parameters.first_item)
         .limit(pagination_parameters.page_size)
@@ -93,6 +78,7 @@ def get_employer_posts(employer_id: int, pagination_parameters: PaginationParame
 
     stmt = (
         select(JobPost)
+        .options(joinedload(JobPost.province), joinedload(JobPost.district))
         .where(JobPost.employer_id == employer_id)
         .order_by(JobPost.id.desc())
         .offset(pagination_parameters.first_item)

@@ -26,6 +26,7 @@ import {
 	type JobPostStatus,
 	WORK_MODELS_MAP,
 } from "@/types/post";
+import { Skeleton } from "./ui/skeleton";
 
 const STATUS_VARIANT: Record<
 	JobPostStatus,
@@ -44,7 +45,7 @@ export function JobPostCard({
 	isManager?: boolean;
 }) {
 	return (
-		<Card className="gap-3 pt-2.75">
+		<Card className="gap-3 pt-2.75 shadow">
 			<CardHeader className="flex items-center gap-3">
 				<CardTitle className="text-base">{post.title}</CardTitle>
 
@@ -79,7 +80,14 @@ export function JobPostCard({
 
 				<Description>
 					<MapPinIcon />
-					{post.address || "Chưa cập nhật địa điểm"}
+
+					{post.work_model === "REMOTE" ? (
+						<span>Toàn Quốc</span>
+					) : (
+						<span>
+							{post.district.name}, {post.province.name}
+						</span>
+					)}
 				</Description>
 			</CardContent>
 
@@ -104,5 +112,22 @@ export function JobPostCard({
 				</div>
 			</CardFooter>
 		</Card>
+	);
+}
+
+export function JobPostSkeletons() {
+	return (
+		<div className="flex flex-col gap-4">
+			{[...Array(15)].map((_, index) => (
+				<Card key={index} className="h-38">
+					<CardContent className="flex flex-col gap-3">
+						<Skeleton className="h-6 w-1/3" />
+						<Skeleton className="h-4 w-1/2" />
+						<Skeleton className="h-4 w-2/3" />
+						<Skeleton className="mt-2 h-6 w-full" />
+					</CardContent>
+				</Card>
+			))}
+		</div>
 	);
 }

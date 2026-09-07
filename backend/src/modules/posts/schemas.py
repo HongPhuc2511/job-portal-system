@@ -10,6 +10,7 @@ from sqlalchemy import select
 
 from src.extensions import db
 from src.modules.location import District, Province
+from src.modules.location.schemas import DistrictResponse, ProvinceResponse
 
 from .enums import ExperienceLevel, JobType, SalaryPeriod, WorkModel
 from .models import JobPost
@@ -105,3 +106,6 @@ class JobPostResponse(SQLAlchemyAutoSchema):
             "description": "Mức lương đã được format",
         },
     )
+
+    province = fields.Nested(ProvinceResponse, dump_only=True)
+    district = fields.Nested(DistrictResponse, dump_only=True)
