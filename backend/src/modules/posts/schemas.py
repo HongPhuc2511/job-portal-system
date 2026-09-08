@@ -119,3 +119,9 @@ class JobPostResponse(SQLAlchemyAutoSchema):
 
     province = fields.Nested(ProvinceResponse, dump_only=True)
     district = fields.Nested(DistrictResponse, dump_only=True)
+
+class EmployerDashboardResponse(Schema):
+    total_posts = fields.Integer()
+    active_posts = fields.Integer()
+    total_applications = fields.Integer()
+    pending_applications = fields.Integer()
