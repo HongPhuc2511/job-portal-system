@@ -13,6 +13,7 @@ import ResumeBuilder from "@/pages/resume_builder";
 import ResumeDetailPage from "@/pages/resume_detail";
 import Resumes from "@/pages/resumes";
 import CompanyProfilePage from "./pages/company-profile";
+import EmployerDashboard from "./pages/employer-dashboard";
 
 export function App() {
 	return (
@@ -62,6 +63,15 @@ export function App() {
 
 					<Route path="/companies/:id" element={<CompanyProfilePage />} />
 					<Route path="/posts/:id" element={<PostDetailPage />} />
+
+					<Route
+						path="/employer/dashboard"
+						element={
+							<ProtectedRoute>
+								<EmployerDashboard />
+							</ProtectedRoute>
+						}
+					/>
 				</Routes>
 			</AuthProvider>
 		</BrowserRouter>

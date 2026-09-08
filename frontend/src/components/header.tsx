@@ -4,6 +4,7 @@ import {
 	FileTextIcon,
 	FileUserIcon,
 	LogOutIcon,
+	TrendingUpIcon,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -138,12 +139,14 @@ function UserButton() {
 				{user.role === "employer" && (
 					<>
 						<DropdownMenuGroup>
-							<DropdownMenuItem render={<Link to="/posts" />}>
+							<DropdownMenuItem render={<Link to="/employer/dashboard" />}>
+								<TrendingUpIcon /> Dashboard
+							</DropdownMenuItem>
+							<DropdownMenuItem>
 								<FileTextIcon />
 								Quản lý bài đăng
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
-
 						<DropdownMenuSeparator />
 					</>
 				)}
