@@ -1,3 +1,10 @@
+import {
+	BriefcaseIcon,
+	GraduationCapIcon,
+	PlusIcon,
+	Trash2Icon,
+	UserIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -9,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 
 interface Experience {
 	id: string;
@@ -153,43 +161,64 @@ export default function ResumeBuilder() {
 		"border-input flex min-h-[80px] w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
 	if (loading)
-		return <p className="mx-auto max-w-2xl px-4 py-12">Đang tải...</p>;
+		return (
+			<p className="mx-auto max-w-3xl px-4 py-12 text-muted-foreground text-sm">
+				Đang tải...
+			</p>
+		);
 
 	return (
-		<div className="mx-auto max-w-2xl space-y-6 px-4 py-12">
-			<Card>
-				<CardHeader>
-					<CardTitle>{isEditing ? "Sửa CV" : "Tạo CV theo mẫu"}</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<form onSubmit={handleSubmit} className="space-y-6">
+		<div className="mx-auto max-w-3xl space-y-8 px-4 py-12">
+			<div>
+				<h1 className="font-semibold text-2xl tracking-tight">
+					{isEditing ? "Sửa CV" : "Tạo CV theo mẫu"}
+				</h1>
+				<p className="mt-1 text-muted-foreground text-sm">
+					Điền thông tin bên dưới, hệ thống tự dựng bố cục CV cho bạn.
+				</p>
+			</div>
+
+			<form onSubmit={handleSubmit} className="space-y-6">
+				{/* Thông tin cá nhân */}
+				<Card>
+					<CardHeader className="pb-4">
+						<div className="flex items-center gap-3">
+							<div className="flex size-9 items-center justify-center rounded-full bg-secondary">
+								<UserIcon className="size-4" />
+							</div>
+							<CardTitle className="text-base">Thông tin cá nhân</CardTitle>
+						</div>
+					</CardHeader>
+					<CardContent className="space-y-4">
 						<div className="space-y-1.5">
 							<Label htmlFor="title">Tiêu đề CV</Label>
 							<Input
 								id="title"
 								value={title}
 								onChange={(e) => setTitle(e.target.value)}
+								placeholder="VD: CV Frontend Developer"
 								required
 							/>
 						</div>
 
-						<div className="space-y-1.5">
-							<Label htmlFor="fullName">Họ tên</Label>
-							<Input
-								id="fullName"
-								value={fullName}
-								onChange={(e) => setFullName(e.target.value)}
-								required
-							/>
-						</div>
-
-						<div className="space-y-1.5">
-							<Label htmlFor="phone">Số điện thoại</Label>
-							<Input
-								id="phone"
-								value={phone}
-								onChange={(e) => setPhone(e.target.value)}
-							/>
+						<div className="grid gap-4 sm:grid-cols-2">
+							<div className="space-y-1.5">
+								<Label htmlFor="fullName">Họ tên</Label>
+								<Input
+									id="fullName"
+									value={fullName}
+									onChange={(e) => setFullName(e.target.value)}
+									required
+								/>
+							</div>
+							<div className="space-y-1.5">
+								<Label htmlFor="phone">Số điện thoại</Label>
+								<Input
+									id="phone"
+									value={phone}
+									onChange={(e) => setPhone(e.target.value)}
+								/>
+							</div>
 						</div>
 
 						<div className="space-y-1.5">
@@ -212,119 +241,167 @@ export default function ResumeBuilder() {
 								placeholder="VD: Python, React, SQL"
 							/>
 						</div>
+					</CardContent>
+				</Card>
 
-						<div className="space-y-3">
-							<div className="flex items-center justify-between">
-								<Label>Kinh nghiệm làm việc</Label>
-								<Button
-									type="button"
-									variant="outline"
-									size="sm"
-									onClick={addExperience}
-								>
-									+ Thêm
-								</Button>
+				<Card>
+					<CardHeader className="pb-4">
+						<div className="flex items-center justify-between">
+							<div className="flex items-center gap-3">
+								<div className="flex size-9 items-center justify-center rounded-full bg-secondary">
+									<BriefcaseIcon className="size-4" />
+								</div>
+								<CardTitle className="text-base">
+									Kinh nghiệm làm việc
+								</CardTitle>
 							</div>
-							{experience.map((exp) => (
-								<div key={exp.id} className="space-y-2 rounded-md border p-3">
-									<Input
-										placeholder="Công ty"
-										value={exp.company}
-										onChange={(e) =>
-											updateExperience(exp.id, "company", e.target.value)
-										}
-									/>
-									<Input
-										placeholder="Vị trí"
-										value={exp.position}
-										onChange={(e) =>
-											updateExperience(exp.id, "position", e.target.value)
-										}
-									/>
-									<Input
-										placeholder="Thời gian (VD: 2023 - nay)"
-										value={exp.duration}
-										onChange={(e) =>
-											updateExperience(exp.id, "duration", e.target.value)
-										}
-									/>
-									<textarea
-										className={textareaClass}
-										placeholder="Mô tả công việc"
-										value={exp.description}
-										onChange={(e) =>
-											updateExperience(exp.id, "description", e.target.value)
-										}
-										rows={2}
-									/>
-									<Button
-										type="button"
-										variant="destructive"
-										size="sm"
-										onClick={() => removeExperience(exp.id)}
-									>
-										Xoá mục này
-									</Button>
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								onClick={addExperience}
+							>
+								<PlusIcon className="size-4" />
+								Thêm
+							</Button>
+						</div>
+					</CardHeader>
+					{experience.length > 0 && (
+						<CardContent className="space-y-4">
+							{experience.map((exp, i) => (
+								<div key={exp.id}>
+									{i > 0 && <Separator className="mb-4" />}
+									<div className="space-y-3">
+										<div className="flex items-center justify-between">
+											<span className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
+												Kinh nghiệm #{i + 1}
+											</span>
+											<Button
+												type="button"
+												variant="ghost"
+												size="icon"
+												onClick={() => removeExperience(exp.id)}
+												aria-label="Xoá kinh nghiệm này"
+												className="size-7 text-destructive hover:text-destructive"
+											>
+												<Trash2Icon className="size-4" />
+											</Button>
+										</div>
+										<div className="grid gap-3 sm:grid-cols-2">
+											<Input
+												placeholder="Công ty"
+												value={exp.company}
+												onChange={(e) =>
+													updateExperience(exp.id, "company", e.target.value)
+												}
+											/>
+											<Input
+												placeholder="Vị trí"
+												value={exp.position}
+												onChange={(e) =>
+													updateExperience(exp.id, "position", e.target.value)
+												}
+											/>
+										</div>
+										<Input
+											placeholder="Thời gian (VD: 2023 - nay)"
+											value={exp.duration}
+											onChange={(e) =>
+												updateExperience(exp.id, "duration", e.target.value)
+											}
+										/>
+										<textarea
+											className={textareaClass}
+											placeholder="Mô tả công việc"
+											value={exp.description}
+											onChange={(e) =>
+												updateExperience(exp.id, "description", e.target.value)
+											}
+											rows={2}
+										/>
+									</div>
 								</div>
 							))}
-						</div>
+						</CardContent>
+					)}
+				</Card>
 
-						<div className="space-y-3">
-							<div className="flex items-center justify-between">
-								<Label>Học vấn</Label>
-								<Button
-									type="button"
-									variant="outline"
-									size="sm"
-									onClick={addEducation}
-								>
-									+ Thêm
-								</Button>
+				<Card>
+					<CardHeader className="pb-4">
+						<div className="flex items-center justify-between">
+							<div className="flex items-center gap-3">
+								<div className="flex size-9 items-center justify-center rounded-full bg-secondary">
+									<GraduationCapIcon className="size-4" />
+								</div>
+								<CardTitle className="text-base">Học vấn</CardTitle>
 							</div>
-							{education.map((edu) => (
-								<div key={edu.id} className="space-y-2 rounded-md border p-3">
-									<Input
-										placeholder="Trường"
-										value={edu.school}
-										onChange={(e) =>
-											updateEducation(edu.id, "school", e.target.value)
-										}
-									/>
-									<Input
-										placeholder="Chuyên ngành"
-										value={edu.major}
-										onChange={(e) =>
-											updateEducation(edu.id, "major", e.target.value)
-										}
-									/>
-									<Input
-										placeholder="Thời gian (VD: 2020 - 2024)"
-										value={edu.duration}
-										onChange={(e) =>
-											updateEducation(edu.id, "duration", e.target.value)
-										}
-									/>
-									<Button
-										type="button"
-										variant="destructive"
-										size="sm"
-										onClick={() => removeEducation(edu.id)}
-									>
-										Xoá mục này
-									</Button>
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								onClick={addEducation}
+							>
+								<PlusIcon className="size-4" />
+								Thêm
+							</Button>
+						</div>
+					</CardHeader>
+					{education.length > 0 && (
+						<CardContent className="space-y-4">
+							{education.map((edu, i) => (
+								<div key={edu.id}>
+									{i > 0 && <Separator className="mb-4" />}
+									<div className="space-y-3">
+										<div className="flex items-center justify-between">
+											<span className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
+												Học vấn #{i + 1}
+											</span>
+											<Button
+												type="button"
+												variant="ghost"
+												size="icon"
+												onClick={() => removeEducation(edu.id)}
+												aria-label="Xoá học vấn này"
+												className="size-7 text-destructive hover:text-destructive"
+											>
+												<Trash2Icon className="size-4" />
+											</Button>
+										</div>
+										<div className="grid gap-3 sm:grid-cols-2">
+											<Input
+												placeholder="Trường"
+												value={edu.school}
+												onChange={(e) =>
+													updateEducation(edu.id, "school", e.target.value)
+												}
+											/>
+											<Input
+												placeholder="Chuyên ngành"
+												value={edu.major}
+												onChange={(e) =>
+													updateEducation(edu.id, "major", e.target.value)
+												}
+											/>
+										</div>
+										<Input
+											placeholder="Thời gian (VD: 2020 - 2024)"
+											value={edu.duration}
+											onChange={(e) =>
+												updateEducation(edu.id, "duration", e.target.value)
+											}
+										/>
+									</div>
 								</div>
 							))}
-						</div>
+						</CardContent>
+					)}
+				</Card>
 
-						{message && (
-							<p className="text-muted-foreground text-sm">{message}</p>
-						)}
-						<Button type="submit" className="w-full">
-							{isEditing ? "Lưu thay đổi" : "Tạo CV"}
-						</Button>
-					</form>
-				</CardContent>
-			</Card>
+				{message && <p className="text-muted-foreground text-sm">{message}</p>}
+				<Button type="submit" className="h-11 w-full">
+					{isEditing ? "Lưu thay đổi" : "Tạo CV"}
+				</Button>
+			</form>
 		</div>
 	);
 }
