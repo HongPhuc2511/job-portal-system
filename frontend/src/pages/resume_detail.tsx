@@ -1,8 +1,10 @@
+import { GraduationCapIcon, PhoneIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getResumeDetail } from "@/api/resume";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface Experience {
 	company: string;
@@ -48,16 +50,30 @@ export default function ResumeDetailPage() {
 	}, [id]);
 
 	if (loading)
-		return <p className="mx-auto max-w-2xl px-4 py-12">Đang tải...</p>;
+		return (
+			<p className="mx-auto max-w-3xl px-4 py-12 text-muted-foreground text-sm">
+				Đang tải...
+			</p>
+		);
 	if (!resume?.content)
-		return <p className="mx-auto max-w-2xl px-4 py-12">Không tìm thấy CV.</p>;
+		return (
+			<p className="mx-auto max-w-3xl px-4 py-12 text-muted-foreground text-sm">
+				Không tìm thấy CV.
+			</p>
+		);
 
 	const c = resume.content;
+	const initials = (c.full_name || resume.title)
+		.split(" ")
+		.slice(-2)
+		.map((w) => w[0])
+		.join("")
+		.toUpperCase();
 
 	return (
-		<div className="mx-auto max-w-2xl space-y-4 px-4 py-12">
+		<div className="mx-auto max-w-3xl space-y-4 px-4 py-12">
 			<Button
-				variant="outline"
+				variant="ghost"
 				size="sm"
 				render={<Link to="/resumes" />}
 				nativeButton={false}
@@ -65,39 +81,61 @@ export default function ResumeDetailPage() {
 				← Quay lại danh sách
 			</Button>
 
-			<Card>
-				<CardHeader>
-					<CardTitle className="text-2xl">
-						{c.full_name || resume.title}
-					</CardTitle>
-					{c.phone && (
-						<p className="text-muted-foreground text-sm">{c.phone}</p>
-					)}
-				</CardHeader>
-				<CardContent className="space-y-6">
+			<Card className="overflow-hidden">
+				<div className="flex items-center gap-4 border-b bg-secondary/40 px-8 py-8">
+					<div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground text-xl">
+						{initials}
+					</div>
+					<div className="min-w-0">
+						<h1 className="truncate font-semibold text-2xl tracking-tight">
+							{c.full_name || resume.title}
+						</h1>
+						<p className="text-muted-foreground text-sm">{resume.title}</p>
+						{c.phone && (
+							<div className="mt-2 flex items-center gap-1.5 text-muted-foreground text-sm">
+								<PhoneIcon className="size-3.5" />
+								{c.phone}
+							</div>
+						)}
+					</div>
+				</div>
+
+				<CardContent className="space-y-8 px-8 py-8">
 					{c.summary && (
 						<section>
-							<h3 className="mb-1 font-semibold">Giới thiệu bản thân</h3>
-							<p className="text-sm">{c.summary}</p>
+							<h2 className="mb-2 font-semibold text-sm uppercase tracking-wide">
+								Giới thiệu bản thân
+							</h2>
+							<p className="text-sm leading-relaxed">{c.summary}</p>
 						</section>
 					)}
 
 					{c.experience && c.experience.length > 0 && (
 						<section>
-							<h3 className="mb-2 font-semibold">Kinh nghiệm làm việc</h3>
-							<div className="space-y-3">
+							<h2 className="mb-4 font-semibold text-sm uppercase tracking-wide">
+								Kinh nghiệm làm việc
+							</h2>
+							<div className="space-y-6">
 								{c.experience.map((exp) => (
 									<div
 										key={`${exp.company}-${exp.position}-${exp.duration}`}
-										className="border-l-2 pl-3"
+										className="relative border-l-2 pl-5"
 									>
-										<p className="font-medium">
-											{exp.position} — {exp.company}
+										<div className="-left-[5px] absolute top-1 size-2 rounded-full bg-primary" />
+										<div className="flex flex-wrap items-baseline justify-between gap-x-3">
+											<p className="font-medium text-sm">{exp.position}</p>
+											<p className="text-muted-foreground text-xs">
+												{exp.duration}
+											</p>
+										</div>
+										<p className="text-muted-foreground text-sm">
+											{exp.company}
 										</p>
-										<p className="text-muted-foreground text-xs">
-											{exp.duration}
-										</p>
-										<p className="mt-1 text-sm">{exp.description}</p>
+										{exp.description && (
+											<p className="mt-1.5 text-sm leading-relaxed">
+												{exp.description}
+											</p>
+										)}
 									</div>
 								))}
 							</div>
@@ -106,18 +144,29 @@ export default function ResumeDetailPage() {
 
 					{c.education && c.education.length > 0 && (
 						<section>
-							<h3 className="mb-2 font-semibold">Học vấn</h3>
-							<div className="space-y-3">
+							<h2 className="mb-4 font-semibold text-sm uppercase tracking-wide">
+								Học vấn
+							</h2>
+							<div className="space-y-4">
 								{c.education.map((edu) => (
 									<div
 										key={`${edu.school}-${edu.major}-${edu.duration}`}
-										className="border-l-2 pl-3"
+										className="flex items-start gap-3"
 									>
-										<p className="font-medium">{edu.school}</p>
-										<p className="text-sm">{edu.major}</p>
-										<p className="text-muted-foreground text-xs">
-											{edu.duration}
-										</p>
+										<div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary">
+											<GraduationCapIcon className="size-4" />
+										</div>
+										<div className="min-w-0">
+											<div className="flex flex-wrap items-baseline justify-between gap-x-3">
+												<p className="font-medium text-sm">{edu.school}</p>
+												<p className="text-muted-foreground text-xs">
+													{edu.duration}
+												</p>
+											</div>
+											<p className="text-muted-foreground text-sm">
+												{edu.major}
+											</p>
+										</div>
 									</div>
 								))}
 							</div>
@@ -126,15 +175,14 @@ export default function ResumeDetailPage() {
 
 					{c.skills && c.skills.length > 0 && (
 						<section>
-							<h3 className="mb-2 font-semibold">Kỹ năng</h3>
+							<h2 className="mb-3 font-semibold text-sm uppercase tracking-wide">
+								Kỹ năng
+							</h2>
 							<div className="flex flex-wrap gap-2">
 								{c.skills.map((skill) => (
-									<span
-										key={skill}
-										className="rounded-full bg-secondary px-3 py-1 text-xs"
-									>
+									<Badge key={skill} variant="secondary">
 										{skill}
-									</span>
+									</Badge>
 								))}
 							</div>
 						</section>

@@ -1,3 +1,11 @@
+import {
+	FilePenLineIcon,
+	FilePlusIcon,
+	FileTextIcon,
+	FileUserIcon,
+	Trash2Icon,
+	UploadIcon,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -10,7 +18,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 interface Resume {
 	id: number;
@@ -86,71 +93,116 @@ export default function Resumes() {
 	};
 
 	return (
-		<div className="mx-auto max-w-md space-y-6 px-4 py-12">
-			<Card>
-				<CardHeader>
-					<CardTitle>Tạo CV mới</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<form onSubmit={handleSubmit} className="space-y-4">
-						<div className="space-y-1.5">
-							<Label htmlFor="title">Tiêu đề CV</Label>
+		<div className="mx-auto max-w-3xl space-y-8 px-4 py-12">
+			<div>
+				<h1 className="font-semibold text-2xl tracking-tight">Quản lý CV</h1>
+				<p className="mt-1 text-muted-foreground text-sm">
+					Tạo, chỉnh sửa và quản lý các CV bạn dùng để ứng tuyển.
+				</p>
+			</div>
+
+			<div className="grid gap-4 sm:grid-cols-2">
+				<Card>
+					<CardHeader>
+						<div className="flex items-center gap-2">
+							<div className="flex size-9 items-center justify-center rounded-full bg-secondary">
+								<UploadIcon className="size-4" />
+							</div>
+							<CardTitle className="text-base">Tải lên file PDF</CardTitle>
+						</div>
+					</CardHeader>
+					<CardContent>
+						<form onSubmit={handleSubmit} className="space-y-3">
 							<Input
-								id="title"
 								value={title}
 								onChange={(e) => setTitle(e.target.value)}
-								placeholder="VD: CV Frontend Developer"
+								placeholder="Tiêu đề CV, VD: CV Frontend Developer"
 							/>
-						</div>
-						<div className="space-y-1.5">
-							<Label htmlFor="file">File PDF</Label>
 							<Input
-								id="file"
 								type="file"
 								accept="application/pdf"
 								onChange={(e) => setFile(e.target.files?.[0] ?? null)}
 							/>
+							<Button type="submit" size="sm" className="w-full">
+								Tải lên
+							</Button>
+						</form>
+					</CardContent>
+				</Card>
+
+				<Card>
+					<CardHeader>
+						<div className="flex items-center gap-2">
+							<div className="flex size-9 items-center justify-center rounded-full bg-secondary">
+								<FilePlusIcon className="size-4" />
+							</div>
+							<CardTitle className="text-base">Tạo theo mẫu</CardTitle>
 						</div>
-						{message && (
-							<p className="text-muted-foreground text-sm">{message}</p>
-						)}
-						<Button type="submit" className="w-full">
-							Tạo CV
-						</Button>
+					</CardHeader>
+					<CardContent className="flex h-[calc(100%-3.5rem)] flex-col justify-between gap-3">
+						<p className="text-muted-foreground text-sm">
+							Nhập thông tin theo form có sẵn — hệ thống tự dựng bố cục CV cho
+							bạn.
+						</p>
 						<Button
 							variant="outline"
+							size="sm"
 							className="w-full"
 							render={<Link to="/resumes/builder" />}
 							nativeButton={false}
 						>
-							Tạo CV theo mẫu (nhập thông tin)
+							Bắt đầu nhập thông tin
 						</Button>
-					</form>
-				</CardContent>
-			</Card>
+					</CardContent>
+				</Card>
+			</div>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>CV của tôi</CardTitle>
-				</CardHeader>
-				<CardContent className="divide-y">
-					{resumes.length === 0 && (
-						<p className="text-muted-foreground text-sm">Chưa có CV nào.</p>
-					)}
-					{resumes.map((r) => (
-						<div
-							key={r.id}
-							className="flex items-center justify-between gap-3 py-3"
-						>
-							{editingId === r.id ? (
-								<Input
-									value={editTitle}
-									onChange={(e) => setEditTitle(e.target.value)}
-									className="h-8"
-								/>
-							) : (
-								<span className="font-medium text-sm">{r.title}</span>
-							)}
+			{message && <p className="text-muted-foreground text-sm">{message}</p>}
+
+			<div className="space-y-3">
+				<h2 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
+					CV của tôi ({resumes.length})
+				</h2>
+
+				{resumes.length === 0 && (
+					<Card className="border-dashed">
+						<CardContent className="flex flex-col items-center gap-2 py-10 text-center">
+							<FileUserIcon className="size-8 text-muted-foreground" />
+							<p className="text-muted-foreground text-sm">
+								Bạn chưa có CV nào. Tạo CV đầu tiên ở phía trên.
+							</p>
+						</CardContent>
+					</Card>
+				)}
+
+				{resumes.map((r) => (
+					<Card key={r.id}>
+						<CardContent className="flex items-center gap-4 py-4">
+							<div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary">
+								<FileTextIcon className="size-5" />
+							</div>
+
+							<div className="min-w-0 flex-1">
+								{editingId === r.id ? (
+									<Input
+										value={editTitle}
+										onChange={(e) => setEditTitle(e.target.value)}
+										className="h-8"
+									/>
+								) : (
+									<div className="flex items-center gap-2">
+										<span className="truncate font-medium text-sm">
+											{r.title}
+										</span>
+										<span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-[11px] text-secondary-foreground">
+											{r.resume_type === "upload" ? "File PDF" : "Theo mẫu"}
+										</span>
+									</div>
+								)}
+								<p className="mt-0.5 text-muted-foreground text-xs">
+									{new Date(r.created_at).toLocaleDateString("vi-VN")}
+								</p>
+							</div>
 
 							<div className="flex shrink-0 items-center gap-2">
 								{editingId === r.id ? (
@@ -164,9 +216,6 @@ export default function Resumes() {
 									</>
 								) : (
 									<>
-										<span className="text-muted-foreground text-xs">
-											{new Date(r.created_at).toLocaleDateString("vi-VN")}
-										</span>
 										{r.resume_type === "upload" ? (
 											<Button
 												variant="outline"
@@ -185,38 +234,44 @@ export default function Resumes() {
 												Xem
 											</Button>
 										)}
+
 										{r.resume_type === "upload" ? (
 											<Button
-												variant="outline"
-												size="sm"
+												variant="ghost"
+												size="icon"
 												onClick={() => startEdit(r)}
+												aria-label="Sửa tiêu đề"
 											>
-												Sửa tiêu đề
+												<FilePenLineIcon className="size-4" />
 											</Button>
 										) : (
 											<Button
-												variant="outline"
-												size="sm"
+												variant="ghost"
+												size="icon"
 												render={<Link to={`/resumes/${r.id}/edit`} />}
 												nativeButton={false}
+												aria-label="Sửa CV"
 											>
-												Sửa
+												<FilePenLineIcon className="size-4" />
 											</Button>
 										)}
+
 										<Button
-											variant="destructive"
-											size="sm"
+											variant="ghost"
+											size="icon"
 											onClick={() => handleDelete(r.id)}
+											aria-label="Xoá CV"
+											className="text-destructive hover:text-destructive"
 										>
-											Xoá
+											<Trash2Icon className="size-4" />
 										</Button>
 									</>
 								)}
 							</div>
-						</div>
-					))}
-				</CardContent>
-			</Card>
+						</CardContent>
+					</Card>
+				))}
+			</div>
 		</div>
 	);
 }
