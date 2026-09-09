@@ -12,10 +12,12 @@ from src.extensions import db
 from src.modules.auth.decorators import role_required
 from src.modules.auth.enums import UserRole
 from src.modules.auth.models import User
+from src.modules.jobs.models import Application, Resume
+from src.modules.jobs.enums import ApplicationStatus
 
 from .enums import JobPostStatus
 from .models import JobPost
-from .schemas import JobPostRequest, JobPostResponse, EmployerDashboardResponse
+from .schemas import JobPostRequest, JobPostResponse, EmployerDashboardResponse, ApplyJobRequest
 from ..jobs.enums import ApplicationStatus
 from ..jobs.models import Application
 
@@ -218,3 +220,14 @@ def get_employer_dashboard():
         "total_applications": total_applications,
         "pending_applications": pending_applications,
     }
+
+
+@job_posts_bp.route("/<int:post_id>/apply", methods=["POST"])
+@role_required(UserRole.SEEKER)
+@job_posts_bp.arguments(ApplyJobRequest)
+@job_posts_bp.response(201, description="Ứng tuyển thành công")
+def apply_job(data, post_id: int):
+    """
+    Ứng viên nộp CV vào một bài đăng tuyển dụng
+    """
+    
