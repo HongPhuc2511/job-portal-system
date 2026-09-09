@@ -230,7 +230,12 @@ def apply_job(data, post_id: int):
     """
     Ứng viên nộp CV vào một bài đăng tuyển dụng
     """
+    candidate_id = int(get_jwt_identity())
+
     job = db.session.get(JobPost, post_id)
     if job is None or job.status != JobPostStatus.ACTIVE:
         abort(404, message="Tin tuyển dụng không tồn tại hoặc đã đóng!")
-    
+
+    resume = db.session.get(Resume, data["resume_id"])
+    if resume is None or resume.user_id != candidate_id:
+        abort(403, message="CV không hợp lệ hoặc không thuộc quyền sở hữu của bạn!")
