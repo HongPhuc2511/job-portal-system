@@ -214,7 +214,13 @@ export default function PostDetailPage() {
 												onValueChange={(val) => setSelectedResumeId(val ?? "")}
 											>
 												<SelectTrigger className="w-full">
-													<SelectValue placeholder="-- Vui lòng chọn CV --" />
+													<SelectValue placeholder="-- Vui lòng chọn CV --">
+														{
+															resumes?.find(
+																(r) => String(r.id) === selectedResumeId,
+															)?.title
+														}
+													</SelectValue>
 												</SelectTrigger>
 												<SelectContent>
 													{resumes?.map((r) => (
