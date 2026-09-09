@@ -230,4 +230,7 @@ def apply_job(data, post_id: int):
     """
     Ứng viên nộp CV vào một bài đăng tuyển dụng
     """
+    job = db.session.get(JobPost, post_id)
+    if job is None or job.status != JobPostStatus.ACTIVE:
+        abort(404, message="Tin tuyển dụng không tồn tại hoặc đã đóng!")
     
