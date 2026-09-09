@@ -249,3 +249,15 @@ def apply_job(data, post_id: int):
     
     if existing_app:
         abort(400, message="Bạn đã nộp hồ sơ vào vị trí này rồi. Vui lòng chờ phản hồi!")
+
+    application = Application(
+        candidate_id=candidate_id,
+        job_post_id=post_id,
+        resume_id=data["resume_id"],
+        cover_letter=data.get("cover_letter"),
+        status=ApplicationStatus.PENDING
+    )
+    db.session.add(application)
+    db.session.commit()
+    
+    return {"message": "Ứng tuyển thành công"}
