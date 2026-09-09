@@ -126,3 +126,18 @@ export function useGetEmployerDashboard(): UseQueryResult<EmployerDashboardStats
 		},
 	});
 }
+
+export function useApplyToPost() {
+	return useMutation({
+		mutationFn: async ({
+			postId,
+			data,
+		}: {
+			postId: number;
+			data: { resume_id: number; cover_letter?: string };
+		}) => {
+			const response = await axiosClient.post(`/posts/${postId}/apply`, data);
+			return response.data;
+		},
+	});
+}
