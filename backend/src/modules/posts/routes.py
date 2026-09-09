@@ -239,3 +239,13 @@ def apply_job(data, post_id: int):
     resume = db.session.get(Resume, data["resume_id"])
     if resume is None or resume.user_id != candidate_id:
         abort(403, message="CV không hợp lệ hoặc không thuộc quyền sở hữu của bạn!")
+
+    existing_app = db.session.scalars(
+        select(Application).where(
+            Application.candidate_id == candidate_id,
+            Application.job_post_id == post_id
+        )
+    ).first()
+    
+    if existing_app:
+        abort(400, message="Bạn đã nộp hồ sơ vào vị trí này rồi. Vui lòng chờ phản hồi!")
