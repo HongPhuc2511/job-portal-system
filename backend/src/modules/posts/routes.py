@@ -15,7 +15,9 @@ from src.modules.auth.models import User
 
 from .enums import JobPostStatus
 from .models import JobPost
-from .schemas import JobPostRequest, JobPostResponse
+from .schemas import JobPostRequest, JobPostResponse, EmployerDashboardResponse
+from ..jobs.enums import ApplicationStatus
+from ..jobs.models import Application
 
 job_posts_bp = Blueprint(
     "job-posts",
@@ -176,3 +178,43 @@ def get_job_post(post_id: int):
         abort(404, message="Bài đăng không tồn tại")
         
     return job
+
+@job_posts_bp.route("/dashboard", methods=["GET"])
+@role_required(UserRole.EMPLOYER)
+@job_posts_bp.response(200, schema=EmployerDashboardResponse)
+def get_employer_dashboard():
+    """Tổng quan dashboard của nhà tuyển dụng """
+    employer_id = int(get_jwt_identity())
+
+    total_posts = db.session.scalar(
+        select(func.count(JobPost.id)).where(JobPost.employer_id == employer_id)
+    )
+
+    active_posts = db.session.scalar(
+        select(func.count(JobPost.id)).where(
+            JobPost.employer_id == employer_id,
+            JobPost.status == JobPostStatus.ACTIVE,
+        )
+    )
+
+    total_applications = db.session.scalar(
+        select(func.count(Application.id))
+        .join(JobPost, Application.job_post_id == JobPost.id)
+        .where(JobPost.employer_id == employer_id)
+    )
+
+    pending_applications = db.session.scalar(
+        select(func.count(Application.id))
+        .join(JobPost, Application.job_post_id == JobPost.id)
+        .where(
+            JobPost.employer_id == employer_id,
+            Application.status == ApplicationStatus.PENDING,
+        )
+    )
+
+    return {
+        "total_posts": total_posts,
+        "active_posts": active_posts,
+        "total_applications": total_applications,
+        "pending_applications": pending_applications,
+    }

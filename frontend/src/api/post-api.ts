@@ -108,3 +108,21 @@ export function useGetJobPost(postId: number) {
 		enabled: Number.isInteger(postId) && postId > 0,
 	});
 }
+
+export interface EmployerDashboardStats {
+	total_posts: number;
+	active_posts: number;
+	total_applications: number;
+	pending_applications: number;
+}
+
+export function useGetEmployerDashboard(): UseQueryResult<EmployerDashboardStats> {
+	return useQuery({
+		queryKey: ["employer-dashboard"],
+		queryFn: async () => {
+			const response =
+				await axiosClient.get<EmployerDashboardStats>("/posts/dashboard");
+			return response.data;
+		},
+	});
+}
