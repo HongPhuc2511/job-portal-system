@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import axiosClient from "./axiosClient";
 
 export const createResumes = (title: string, file: File) => {
@@ -42,3 +43,21 @@ export const updateResume = (id: number, title: string, content?: object) => {
 		content ? { title, content } : { title },
 	);
 };
+
+export interface ResumeResponse {
+	id: number;
+	title: string;
+	resume_type: string;
+	file_path: string | null;
+	created_at: string;
+}
+
+export function useGetResumesQuery() {
+	return useQuery({
+		queryKey: ["my-resumes"],
+		queryFn: async () => {
+			const res = await axiosClient.get<ResumeResponse[]>("/resumes");
+			return res.data;
+		},
+	});
+}

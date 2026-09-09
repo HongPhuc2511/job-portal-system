@@ -125,3 +125,8 @@ class EmployerDashboardResponse(Schema):
     active_posts = fields.Integer()
     total_applications = fields.Integer()
     pending_applications = fields.Integer()
+
+class ApplyJobRequest(Schema):
+    """Schema cho chức năng nộp CV ứng tuyển"""
+    resume_id = fields.Integer(required=True, validate=validate.Range(min=1))
+    cover_letter = fields.String(allow_none=True)

@@ -12,10 +12,12 @@ from src.extensions import db
 from src.modules.auth.decorators import role_required
 from src.modules.auth.enums import UserRole
 from src.modules.auth.models import User
+from src.modules.jobs.models import Application, Resume
+from src.modules.jobs.enums import ApplicationStatus
 
 from .enums import JobPostStatus
 from .models import JobPost
-from .schemas import JobPostRequest, JobPostResponse, EmployerDashboardResponse
+from .schemas import JobPostRequest, JobPostResponse, EmployerDashboardResponse, ApplyJobRequest
 from ..jobs.enums import ApplicationStatus
 from ..jobs.models import Application
 
@@ -218,3 +220,44 @@ def get_employer_dashboard():
         "total_applications": total_applications,
         "pending_applications": pending_applications,
     }
+
+
+@job_posts_bp.route("/<int:post_id>/apply", methods=["POST"])
+@role_required(UserRole.SEEKER)
+@job_posts_bp.arguments(ApplyJobRequest)
+@job_posts_bp.response(201, description="Ứng tuyển thành công")
+def apply_job(data, post_id: int):
+    """
+    Ứng viên nộp CV vào một bài đăng tuyển dụng
+    """
+    candidate_id = int(get_jwt_identity())
+
+    job = db.session.get(JobPost, post_id)
+    if job is None or job.status != JobPostStatus.ACTIVE:
+        abort(404, message="Tin tuyển dụng không tồn tại hoặc đã đóng!")
+
+    resume = db.session.get(Resume, data["resume_id"])
+    if resume is None or resume.user_id != candidate_id:
+        abort(403, message="CV không hợp lệ hoặc không thuộc quyền sở hữu của bạn!")
+
+    existing_app = db.session.scalars(
+        select(Application).where(
+            Application.candidate_id == candidate_id,
+            Application.job_post_id == post_id
+        )
+    ).first()
+    
+    if existing_app:
+        abort(400, message="Bạn đã nộp hồ sơ vào vị trí này rồi. Vui lòng chờ phản hồi!")
+
+    application = Application(
+        candidate_id=candidate_id,
+        job_post_id=post_id,
+        resume_id=data["resume_id"],
+        cover_letter=data.get("cover_letter"),
+        status=ApplicationStatus.PENDING
+    )
+    db.session.add(application)
+    db.session.commit()
+    
+    return {"message": "Ứng tuyển thành công"}

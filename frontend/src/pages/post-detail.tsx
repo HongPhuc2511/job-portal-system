@@ -4,17 +4,32 @@ import {
 	BuildingIcon,
 	CalendarClockIcon,
 	ChevronLeftIcon,
+	Loader2Icon,
 	MapPinIcon,
 	Users2Icon,
 } from "lucide-react";
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useGetJobPost } from "@/api/post-api";
+import { useApplyToPost, useGetJobPost } from "@/api/post-api";
+import { useGetResumesQuery } from "@/api/resume";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Description } from "@/components/ui/description";
+import { Label } from "@/components/ui/label";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/toast";
+import { useAuth } from "@/context/auth-context";
+import { extractBackendErrors } from "@/lib/backend-error";
 import { calculateRemainingDays, formatDisplayDate } from "@/lib/datetime";
 import { formatSalary } from "@/lib/salary";
 import {
@@ -27,7 +42,39 @@ export default function PostDetailPage() {
 	const { id } = useParams();
 	const postId = Number(id);
 
+	const { user } = useAuth();
+
+	const [isApplying, setIsApplying] = useState(false);
+	const [selectedResumeId, setSelectedResumeId] = useState<string>("");
+	const [coverLetter, setCoverLetter] = useState("");
+
 	const { data: post, isPending, isError } = useGetJobPost(postId);
+	const { data: resumes, isLoading: isLoadingResumes } = useGetResumesQuery();
+	const applyMutation = useApplyToPost();
+
+	const handleApply = async () => {
+		if (!selectedResumeId) {
+			toast.add({ type: "error", title: "Vui lòng chọn CV để ứng tuyển" });
+			return;
+		}
+		try {
+			await applyMutation.mutateAsync({
+				postId,
+				data: {
+					resume_id: Number(selectedResumeId),
+					cover_letter: coverLetter.trim() || undefined,
+				},
+			});
+			toast.add({ type: "success", title: "Nộp hồ sơ thành công!" });
+			setIsApplying(false);
+		} catch (err) {
+			const errors = extractBackendErrors(err);
+			toast.add({
+				type: "error",
+				title: errors.globalErrors[0] || "Có lỗi xảy ra khi nộp hồ sơ",
+			});
+		}
+	};
 
 	if (isPending) {
 		return (
@@ -87,20 +134,17 @@ export default function PostDetailPage() {
 									<BadgeDollarSignIcon className="size-5" />
 									{formatSalary(post.salary_min, post.salary_max)}
 								</Description>
-
 								<Description>
 									<MapPinIcon className="size-5" />
 									{isRemote
 										? "Toàn Quốc"
 										: `${post.district.name}, ${post.province.name}`}
 								</Description>
-
 								<Description>
 									<BriefcaseIcon className="size-5" />
 									{JOB_TYPES_MAP[post.job_type]} -{" "}
 									{WORK_MODELS_MAP[post.work_model]}
 								</Description>
-
 								<Description>
 									<CalendarClockIcon className="size-5" />
 									Hạn nộp: {formatDisplayDate(post.deadline)} (Còn{" "}
@@ -122,15 +166,112 @@ export default function PostDetailPage() {
 					</Card>
 				</div>
 
-				<div className="space-y-6">
+				<div className="space-y-6 lg:sticky lg:top-18 self-start">
 					<Card>
 						<CardContent className="p-4 space-y-4">
-							<Button size="lg" className="w-full text-base font-semibold">
-								Ứng tuyển ngay
-							</Button>
-							<p className="text-center text-xs text-muted-foreground">
-								CV của bạn sẽ được gửi trực tiếp đến nhà tuyển dụng.
-							</p>
+							{!user ? (
+								<Button
+									size="lg"
+									className="w-full text-base font-semibold"
+									render={<Link to="/login" />}
+									nativeButton={false}
+								>
+									Đăng nhập để ứng tuyển
+								</Button>
+							) : user.role === "employer" ? (
+								<Button
+									size="lg"
+									className="w-full text-base font-semibold"
+									disabled
+								>
+									Tài khoản Tuyển dụng
+								</Button>
+							) : isApplying ? (
+								<div className="space-y-4 animate-in fade-in zoom-in-95 duration-200">
+									<div className="space-y-1.5">
+										<Label>
+											Chọn CV của bạn{" "}
+											<span className="text-destructive">*</span>
+										</Label>
+										{isLoadingResumes ? (
+											<div className="h-8 flex items-center text-sm text-muted-foreground">
+												<Loader2Icon className="mr-2 size-4 animate-spin" />{" "}
+												Đang tải CV...
+											</div>
+										) : resumes?.length === 0 ? (
+											<p className="text-sm text-destructive mt-1">
+												Bạn chưa có CV nào.{" "}
+												<Link
+													to="/resumes"
+													className="underline font-medium hover:text-primary"
+												>
+													Tạo CV ngay
+												</Link>
+											</p>
+										) : (
+											<Select
+												value={selectedResumeId}
+												onValueChange={(val) => setSelectedResumeId(val ?? "")}
+											>
+												<SelectTrigger className="w-full">
+													<SelectValue placeholder="-- Vui lòng chọn CV --">
+														{
+															resumes?.find(
+																(r) => String(r.id) === selectedResumeId,
+															)?.title
+														}
+													</SelectValue>
+												</SelectTrigger>
+												<SelectContent>
+													{resumes?.map((r) => (
+														<SelectItem key={r.id} value={String(r.id)}>
+															{r.title}
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+										)}
+									</div>
+									<div className="space-y-1.5">
+										<Label>Thư giới thiệu (Tùy chọn)</Label>
+										<Textarea
+											placeholder="Kỹ năng, kinh nghiệm nổi bật giúp bạn ghi điểm..."
+											rows={4}
+											value={coverLetter}
+											onChange={(e) => setCoverLetter(e.target.value)}
+										/>
+									</div>
+									<div className="flex gap-2">
+										<Button
+											variant="outline"
+											className="flex-1"
+											onClick={() => setIsApplying(false)}
+										>
+											Hủy
+										</Button>
+										<Button
+											className="flex-1"
+											disabled={!selectedResumeId || applyMutation.isPending}
+											onClick={handleApply}
+										>
+											{applyMutation.isPending ? "Đang gửi..." : "Gửi hồ sơ"}
+										</Button>
+									</div>
+								</div>
+							) : (
+								<>
+									<Button
+										size="lg"
+										className="w-full text-base font-semibold"
+										onClick={() => setIsApplying(true)}
+									>
+										Ứng tuyển ngay
+									</Button>
+									<p className="text-center text-xs text-muted-foreground">
+										Hồ sơ của bạn sẽ được gửi trực tiếp đến nhà tuyển dụng.
+									</p>
+								</>
+							)}
 						</CardContent>
 					</Card>
 
