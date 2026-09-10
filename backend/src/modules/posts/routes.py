@@ -14,6 +14,7 @@ from src.modules.auth.enums import UserRole
 from src.modules.auth.models import User
 from src.modules.jobs.models import Application, Resume
 from src.modules.jobs.enums import ApplicationStatus
+from src.modules.jobs.schemas import ApplicationResponse
 
 from .enums import JobPostStatus
 from .models import JobPost
@@ -261,3 +262,27 @@ def apply_job(data, post_id: int):
     db.session.commit()
     
     return {"message": "Ứng tuyển thành công"}
+
+
+@job_posts_bp.route("/applied", methods=["GET"])
+@role_required(UserRole.SEEKER)
+@job_posts_bp.response(200, schema=ApplicationResponse(many=True))
+def get_applied_jobs():
+    """
+    Ứng viên xem danh sách các công việc đã ứng tuyển
+    """
+    candidate_id = int(get_jwt_identity())
+    
+    stmt = (
+        select(Application)
+        .options(
+            joinedload(Application.job_post).joinedload(JobPost.employer),
+            joinedload(Application.job_post).joinedload(JobPost.province),
+            joinedload(Application.job_post).joinedload(JobPost.district),
+            joinedload(Application.resume)
+        )
+        .where(Application.candidate_id == candidate_id)
+        .order_by(Application.created_at.desc())
+    )
+    
+    return db.session.scalars(stmt).all()

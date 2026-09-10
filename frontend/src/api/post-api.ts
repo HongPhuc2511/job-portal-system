@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import type { InferOutput } from "valibot";
 import type PostSchema from "@/schemas/post-schema";
+import type { Application } from "@/types/application";
 import type { Page } from "@/types/paginate";
 import type { JobPost } from "@/types/post";
 import axiosClient from "./axiosClient";
@@ -137,6 +138,16 @@ export function useApplyToPost() {
 			data: { resume_id: number; cover_letter?: string };
 		}) => {
 			const response = await axiosClient.post(`/posts/${postId}/apply`, data);
+			return response.data;
+		},
+	});
+}
+
+export function useGetAppliedJobs() {
+	return useQuery({
+		queryKey: ["applied-jobs"],
+		queryFn: async () => {
+			const response = await axiosClient.get<Application[]>("/posts/applied");
 			return response.data;
 		},
 	});

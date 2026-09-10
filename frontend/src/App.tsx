@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "@/components/header";
 import ProtectedRoute from "@/components/protected-route";
 import { AuthProvider } from "@/context/auth-context";
+import AppliedJobsPage from "@/pages/applied-jobs";
 import EmployerPostsPage from "@/pages/employer-posts";
 import { Home } from "@/pages/home";
 import Login from "@/pages/login";
@@ -46,6 +47,15 @@ export function App() {
 						element={
 							<ProtectedRoute>
 								<ResumeDetailPage />
+							</ProtectedRoute>
+						}
+					/>
+
+					<Route
+						path="/applied-jobs"
+						element={
+							<ProtectedRoute>
+								<AppliedJobsPage />
 							</ProtectedRoute>
 						}
 					/>

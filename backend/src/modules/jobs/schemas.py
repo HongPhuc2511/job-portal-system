@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields
+from src.modules.posts.schemas import JobPostResponse
 
 
 class ResumeResponse(Schema):
@@ -18,3 +19,13 @@ class ResumeUpdateRequest(Schema):
 class ResumeBuilderRequest(Schema):
     title = fields.String(required=True)
     content = fields.Dict(required=True)
+
+
+class ApplicationResponse(Schema):
+    id = fields.Integer()
+    created_at = fields.DateTime()
+    status = fields.Function(lambda obj: obj.status.value)
+    cover_letter = fields.String(allow_none=True)
+    
+    job_post = fields.Nested(JobPostResponse)
+    resume = fields.Nested(ResumeResponse)

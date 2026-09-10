@@ -1,4 +1,5 @@
 import {
+	BriefcaseIcon,
 	ChevronDownIcon,
 	FilePlusIcon,
 	FileTextIcon,
@@ -129,6 +130,9 @@ function UserButton() {
 						<DropdownMenuGroup>
 							<DropdownMenuItem render={<Link to="/resumes" />}>
 								<FileUserIcon /> Quản lý CV
+							</DropdownMenuItem>
+							<DropdownMenuItem render={<Link to="/applied-jobs" />}>
+								<BriefcaseIcon /> Việc làm đã ứng tuyển
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 
