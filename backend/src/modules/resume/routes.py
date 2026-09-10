@@ -8,8 +8,9 @@ from sqlalchemy import select
 
 from src.extensions import db
 
-from .models import Resume, ResumeType
-from .schemas import ResumeResponse,ResumeBuilderRequest,ResumeUpdateRequest
+from .enums import ResumeType
+from .models import Resume
+from .schemas import ResumeBuilderRequest, ResumeResponse, ResumeUpdateRequest
 
 resumes_bp = Blueprint(
     "resumes",
@@ -79,28 +80,35 @@ def get_resume_file(resume_id):
 def delete_resume(resume_id):
     """Ứng viên xóa CV của chính mình"""
     user_id = get_jwt_identity()
-    resume = db.session.get(Resume,resume_id)
+    resume = db.session.get(Resume, resume_id)
     if not resume or str(resume.user_id) != str(user_id):
         return jsonify({"message": "Khong tim thay CV"}), 404
 
     db.session.delete(resume)
     db.session.commit()
-    return {"message":"Xóa CV thành công!"},200
+    return {"message": "Xóa CV thành công!"}, 200
+
 
 @resumes_bp.route("/builder", methods=["POST"])
 @jwt_required()
 @resumes_bp.arguments(ResumeBuilderRequest)
-@resumes_bp.response(201, schema=ResumeResponse, description="Tao CV bang form thanh cong")
+@resumes_bp.response(
+    201, schema=ResumeResponse, description="Tao CV bang form thanh cong"
+)
 def create_resume_builder(data):
     """Ứng viên tạo CV bằng form nhập lieu"""
     user_id = get_jwt_identity()
-    new_resume = Resume(user_id=user_id,title=data["title"],
-                        resume_type=ResumeType.BUILDER,
-                        content=data["content"],)
+    new_resume = Resume(
+        user_id=user_id,
+        title=data["title"],
+        resume_type=ResumeType.BUILDER,
+        content=data["content"],
+    )
     db.session.add(new_resume)
     db.session.commit()
 
     return new_resume
+
 
 @resumes_bp.route("/<int:resume_id>", methods=["GET"])
 @jwt_required()
@@ -115,11 +123,12 @@ def get_resume(resume_id):
 
     return resume
 
-@resumes_bp.route("/<int:resume_id>",methods=["PUT"])
+
+@resumes_bp.route("/<int:resume_id>", methods=["PUT"])
 @jwt_required()
 @resumes_bp.arguments(ResumeUpdateRequest)
-@resumes_bp.response(200,schema=ResumeResponse, description="Cập nhật CV thành công")
-def update_resume(data,resume_id):
+@resumes_bp.response(200, schema=ResumeResponse, description="Cập nhật CV thành công")
+def update_resume(data, resume_id):
     """Ứng viên sửa CV của mình"""
     user_id = get_jwt_identity()
     resume = db.session.get(Resume, resume_id)

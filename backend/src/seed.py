@@ -4,10 +4,11 @@ from sqlalchemy import func, select
 
 from src import create_app
 from src.extensions import db
+from src.modules.application.models import Application
 from src.modules.auth.models import User
-from src.modules.jobs.models import Application, Resume
 from src.modules.location.models import District, Province
 from src.modules.posts.models import JobPost
+from src.modules.resume.models import Resume
 
 seed_locations = importlib.import_module("src.modules.location.seed").seed
 seed_posts = importlib.import_module("src.modules.posts.seed").seed

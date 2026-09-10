@@ -6,7 +6,7 @@ import {
 	MapPinIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useGetAppliedJobs } from "@/api/post-api";
+import { useGetMyApplications } from "@/api/post-api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,8 +15,8 @@ import { formatDisplayDate } from "@/lib/datetime";
 import { formatSalary } from "@/lib/salary";
 import { APPLICATION_STATUS_MAP } from "@/types/application";
 
-export default function AppliedJobsPage() {
-	const { data: applications, isLoading, isError } = useGetAppliedJobs();
+export default function MyApplicationsPage() {
+	const { data: applications, isLoading, isError } = useGetMyApplications();
 
 	if (isLoading) {
 		return (
@@ -111,7 +111,7 @@ export default function AppliedJobsPage() {
 										</div>
 									</div>
 
-									<div className="border-t md:border-t-0 md:border-l pt-3 md:pt-0 md:pl-5 min-w-[200px] flex flex-col gap-2 text-sm">
+									<div className="border-t md:border-t-0 md:border-l pt-3 md:pt-0 md:pl-5 min-w-50 flex flex-col gap-2 text-sm">
 										<div className="flex items-center gap-2 text-muted-foreground">
 											<CalendarIcon className="size-4 shrink-0" />
 											<span>

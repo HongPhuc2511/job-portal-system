@@ -136,11 +136,11 @@ export function useApplyToPost() {
 	});
 }
 
-export function useGetAppliedJobs() {
+export function useGetMyApplications() {
 	return useQuery({
-		queryKey: ["applied-jobs"],
+		queryKey: ["my-applications"],
 		queryFn: async () => {
-			const response = await axiosClient.get<Application[]>("/posts/applied");
+			const response = await axiosClient.get<Application[]>("/applications");
 			return response.data;
 		},
 	});

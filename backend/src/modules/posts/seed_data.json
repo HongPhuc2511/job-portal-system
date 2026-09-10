@@ -727,7 +727,7 @@
               "candidate": "timviec4@gmail.com",
               "resume": "CV Nhân viên Kinh doanh B2B",
               "cover_letter": "Với 3 năm kinh doanh B2B trong ngành phân phối, tôi tin mình có thể nhanh chóng mở rộng tập khách hàng doanh nghiệp khu vực miền Nam cho Minh Phát.",
-              "status": "reviewed",
+              "status": "approved",
               "applied_days_ago": 8
             }
           ]
@@ -758,7 +758,7 @@
               "candidate": "timviec5@gmail.com",
               "resume": "CV Digital Marketing & Social Media",
               "cover_letter": "Tôi mạnh về social media và từng xây dựng kênh TikTok đạt 5 triệu lượt xem. Tôi mong muốn ứng tuyển vào vị trí Digital Marketing của công ty.",
-              "status": "reviewed",
+              "status": "approved",
               "applied_days_ago": 6
             }
           ]
@@ -963,7 +963,7 @@
               "candidate": "timviec1@gmail.com",
               "resume": "CV Full-stack Developer (Python + React)",
               "cover_letter": "Tôi có nền tảng JavaScript/TypeScript vững và từng tham gia phát triển sản phẩm SaaS. Tôi muốn mở rộng sang mảng mobile trong môi trường làm việc từ xa.",
-              "status": "shortlisted",
+              "status": "approved",
               "applied_days_ago": 12
             },
             {
@@ -977,7 +977,7 @@
               "candidate": "timviec6@gmail.com",
               "resume": "CV Mobile Developer (React Native)",
               "cover_letter": "Tôi đã phát hành 4 ứng dụng React Native cho khách hàng Nhật Bản, tự tin giao tiếp tiếng Anh cơ bản trong công việc.",
-              "status": "reviewed",
+              "status": "approved",
               "applied_days_ago": 10
             }
           ]
@@ -1195,7 +1195,7 @@
               "candidate": "timviec2@gmail.com",
               "resume": "CV Content Marketing & SEO",
               "cover_letter": "Kinh nghiệm content chuẩn SEO và phát triển fanpage sẽ giúp tôi triển khai nội dung cho chuỗi nhà hàng của công ty.",
-              "status": "shortlisted",
+              "status": "approved",
               "applied_days_ago": 9
             },
             {

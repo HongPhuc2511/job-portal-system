@@ -4,12 +4,15 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, Enum, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from src.extensions import BaseModel
-from src.modules.auth.enums import UserRole
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from src.extensions import BaseModel
+from src.modules.auth.enums import UserRole
+
 if TYPE_CHECKING:
-    from src.modules.jobs.models import Application, JobPost, Resume
+    from src.modules.application.models import Application
+    from src.modules.posts.models import JobPost
+    from src.modules.resume.models import Resume
 
 
 class User(BaseModel):

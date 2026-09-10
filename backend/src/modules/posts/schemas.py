@@ -13,7 +13,7 @@ from src.modules.auth.models import User
 from src.modules.location import District, Province
 from src.modules.location.schemas import DistrictResponse, ProvinceResponse
 
-from .enums import ExperienceLevel, JobType, SalaryPeriod, WorkModel
+from .enums import ExperienceLevel, JobPostStatus, JobType, SalaryPeriod, WorkModel
 from .models import JobPost
 
 # Tên bản ghi neo cho job remote / toàn quốc - tìm theo name (unique)
@@ -120,13 +120,28 @@ class JobPostResponse(SQLAlchemyAutoSchema):
     province = fields.Nested(ProvinceResponse, dump_only=True)
     district = fields.Nested(DistrictResponse, dump_only=True)
 
+
 class EmployerDashboardResponse(Schema):
     total_posts = fields.Integer()
     active_posts = fields.Integer()
     total_applications = fields.Integer()
     pending_applications = fields.Integer()
 
+
 class ApplyJobRequest(Schema):
-    """Schema cho chức năng nộp CV ứng tuyển"""
+    """
+    Schema cho chức năng nộp CV ứng tuyển
+    """
+
     resume_id = fields.Integer(required=True, validate=validate.Range(min=1))
     cover_letter = fields.String(allow_none=True)
+
+
+class JobPostStatusUpdateRequest(Schema):
+    """Đóng / mở lại bài đăng tuyển dụng (vd: đã tuyển đủ người)"""
+
+    status = fields.Enum(
+        JobPostStatus,
+        required=True,
+        validate=validate.OneOf([JobPostStatus.ACTIVE, JobPostStatus.CLOSED]),
+    )

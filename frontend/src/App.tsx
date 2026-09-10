@@ -2,10 +2,10 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "@/components/header";
 import ProtectedRoute from "@/components/protected-route";
 import { AuthProvider } from "@/context/auth-context";
-import AppliedJobsPage from "@/pages/applied-jobs";
 import EmployerPostsPage from "@/pages/employer-posts";
 import { Home } from "@/pages/home";
 import Login from "@/pages/login";
+import MyApplicationsPage from "@/pages/my-applications";
 import PostCreatePage from "@/pages/post-create";
 import PostDetailPage from "@/pages/post-detail";
 import PostEditPage from "@/pages/post-edit";
@@ -51,10 +51,10 @@ export function App() {
 					/>
 
 					<Route
-						path="/applied-jobs"
+						path="/my-applications"
 						element={
 							<ProtectedRoute>
-								<AppliedJobsPage />
+								<MyApplicationsPage />
 							</ProtectedRoute>
 						}
 					/>

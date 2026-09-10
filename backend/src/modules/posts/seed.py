@@ -6,10 +6,10 @@ from sqlalchemy import func, select
 
 from src import create_app
 from src.extensions import db
+from src.modules.application.enums import ApplicationStatus
+from src.modules.application.models import Application
 from src.modules.auth.enums import UserRole
 from src.modules.auth.models import User
-from src.modules.jobs.enums import ApplicationStatus
-from src.modules.jobs.models import Application, Resume, ResumeType
 from src.modules.location import District, Province
 from src.modules.posts.enums import (
     ExperienceLevel,
@@ -18,6 +18,8 @@ from src.modules.posts.enums import (
     WorkModel,
 )
 from src.modules.posts.models import JobPost
+from src.modules.resume.enums import ResumeType
+from src.modules.resume.models import Resume
 
 SEED_DATA_PATH = Path(__file__).parent / "seed_data.json"
 DEFAULT_PASSWORD = "123456"
@@ -90,9 +92,7 @@ def seed() -> tuple[int, int, int, int]:
     for item in data["accounts"]:
         email = item["email"].lower()
         if email in existing_emails:
-            user = db.session.scalars(
-                select(User).where(User.email == email)
-            ).one()
+            user = db.session.scalars(select(User).where(User.email == email)).one()
         else:
             user = User(
                 email=email,
@@ -157,9 +157,7 @@ def seed() -> tuple[int, int, int, int]:
                     title=title,
                     description=post_item["description"],
                     head_count=post_item.get("head_count"),
-                    experience_level=ExperienceLevel(
-                        post_item["experience_level"]
-                    ),
+                    experience_level=ExperienceLevel(post_item["experience_level"]),
                     work_model=WorkModel(post_item["work_model"]),
                     job_type=JobType(post_item["job_type"]),
                     salary_min=post_item.get("salary_min"),
@@ -199,9 +197,7 @@ def seed() -> tuple[int, int, int, int]:
                 if (candidate.id, post.id) in existing_application_keys:
                     continue
 
-                resume = resumes_by_key.get(
-                    (candidate.id, application_item["resume"])
-                )
+                resume = resumes_by_key.get((candidate.id, application_item["resume"]))
                 if resume is None:
                     raise ValueError(
                         f"Không tìm thấy CV '{application_item['resume']}' "
