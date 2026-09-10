@@ -14,7 +14,7 @@ from src.modules.application.models import Application
 from src.modules.application.schemas import JobPostApplicationResponse
 from src.modules.application.services import (
     attach_application_stats,
-    reject_pending_applications,
+    reject_pending_applications, send_new_application_email,
 )
 from src.modules.auth.decorators import role_required
 from src.modules.auth.enums import UserRole
@@ -311,6 +311,8 @@ def apply_job(data, post_id: int):
     )
     db.session.add(application)
     db.session.commit()
+
+    send_new_application_email(application)
 
     return {"message": "Ứng tuyển thành công"}
 

@@ -14,7 +14,7 @@ from .modules.location.routes import location_bp
 from .modules.posts.routes import job_posts_bp
 from .modules.resume.routes import resumes_bp
 
-mail.init_app(app)
+
 def create_app() -> Flask:
     app = Flask(__name__)
     CORS(
@@ -32,6 +32,7 @@ def create_app() -> Flask:
     migrate.init_app(app, db)
     jwt.init_app(app)
     api_document.init_app(app)
+    mail.init_app(app)
 
     api_document.register_blueprint(applications_bp)
     api_document.register_blueprint(auth_bp)
