@@ -4,19 +4,591 @@
       "email": "timviec1@gmail.com",
       "full_name": "Nguyễn Văn An",
       "role": "seeker",
-      "phone": "0901234561"
+      "phone": "0901234561",
+      "resumes": [
+        {
+          "title": "CV Backend Developer (Python/Django)",
+          "content": {
+            "full_name": "Nguyễn Văn An",
+            "phone": "0901234561",
+            "summary": "Lập trình viên Backend 4 năm kinh nghiệm với Python/Django, quen với mô hình microservices và tối ưu truy vấn PostgreSQL.",
+            "skills": [
+              "Python",
+              "Django",
+              "Django REST Framework",
+              "PostgreSQL",
+              "Redis",
+              "Docker",
+              "REST API",
+              "Git"
+            ],
+            "experience": [
+              {
+                "company": "Công ty Cổ phần VNTech",
+                "position": "Backend Developer",
+                "duration": "2022 - nay",
+                "description": "Phát triển API cho hệ thống đặt hàng 50.000 người dùng, tối ưu truy vấn giúp giảm 40% thời gian phản hồi."
+              },
+              {
+                "company": "Công ty TNHH Giải pháp FPT",
+                "position": "Fresher Backend",
+                "duration": "2021 - 2022",
+                "description": "Tham gia dự án outsource, viết API và unit test với Django REST Framework."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Bách khoa Hà Nội",
+                "major": "Khoa học máy tính",
+                "duration": "2017 - 2021"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CV Full-stack Developer (Python + React)",
+          "content": {
+            "full_name": "Nguyễn Văn An",
+            "phone": "0901234561",
+            "summary": "Kỹ sư phần mềm làm được cả backend (Django/FastAPI) lẫn frontend (React/TypeScript), có kinh nghiệm xây dựng sản phẩm SaaS từ đầu.",
+            "skills": [
+              "Python",
+              "FastAPI",
+              "React",
+              "TypeScript",
+              "MySQL",
+              "Docker",
+              "CI/CD"
+            ],
+            "experience": [
+              {
+                "company": "Công ty Cổ phần VNTech",
+                "position": "Full-stack Developer",
+                "duration": "2023 - nay",
+                "description": "Xây dựng module quản trị bằng React + TypeScript, thiết kế API FastAPI và pipeline CI/CD trên GitLab."
+              },
+              {
+                "company": "Trung tâm Công nghệ ABC",
+                "position": "Thực tập sinh Backend",
+                "duration": "2020 - 2021",
+                "description": "Hỗ trợ viết script xử lý dữ liệu và sửa lỗi API Django."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Bách khoa Hà Nội",
+                "major": "Khoa học máy tính",
+                "duration": "2017 - 2021"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CV Kỹ sư Backend (bản tổng hợp)",
+          "content": {
+            "full_name": "Nguyễn Văn An",
+            "phone": "0901234561",
+            "summary": "4 năm kinh nghiệm phát triển backend, có khả năng thiết kế hệ thống, xử lý bất đồng bộ và làm việc theo quy trình Agile.",
+            "skills": [
+              "Python",
+              "Django",
+              "PostgreSQL",
+              "Celery",
+              "RabbitMQ",
+              "Linux"
+            ],
+            "experience": [
+              {
+                "company": "Công ty Cổ phần VNTech",
+                "position": "Backend Developer",
+                "duration": "2022 - nay",
+                "description": "Thiết kế cơ sở dữ liệu và xây dựng message queue xử lý đơn hàng bất đồng bộ với Celery/RabbitMQ."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Bách khoa Hà Nội",
+                "major": "Khoa học máy tính",
+                "duration": "2017 - 2021"
+              }
+            ]
+          }
+        }
+      ]
     },
     {
       "email": "timviec2@gmail.com",
       "full_name": "Trần Thị Bích",
       "role": "seeker",
-      "phone": "0901234562"
+      "phone": "0901234562",
+      "resumes": [
+        {
+          "title": "CV Digital Marketing",
+          "content": {
+            "full_name": "Trần Thị Bích",
+            "phone": "0901234562",
+            "summary": "Chuyên viên Digital Marketing 3 năm kinh nghiệm, mạnh về vận hành quảng cáo Google/Facebook và tối ưu chi phí chuyển đổi.",
+            "skills": [
+              "Google Ads",
+              "Facebook Ads",
+              "Google Analytics",
+              "SEO",
+              "Email Marketing",
+              "Excel"
+            ],
+            "experience": [
+              {
+                "company": "Công ty Truyền thông Sao Việt",
+                "position": "Digital Marketing Executive",
+                "duration": "2022 - nay",
+                "description": "Quản lý ngân sách quảng cáo 300 triệu/tháng, tối ưu CPA giảm 25% sau 6 tháng."
+              },
+              {
+                "company": "Công ty TNHH Thương mại Đại Phát",
+                "position": "Nhân viên Marketing",
+                "duration": "2021 - 2022",
+                "description": "Vận hành kênh Facebook/TikTok và phối hợp thiết kế ấn phẩm bán hàng."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Kinh tế Quốc dân",
+                "major": "Marketing",
+                "duration": "2017 - 2021"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CV Content Marketing & SEO",
+          "content": {
+            "full_name": "Trần Thị Bích",
+            "phone": "0901234562",
+            "summary": "Mạnh về nội dung: xây dựng kế hoạch content, viết bài chuẩn SEO và phát triển kênh mạng xã hội cho thương hiệu.",
+            "skills": [
+              "SEO",
+              "Content Strategy",
+              "Copywriting",
+              "WordPress",
+              "Google Search Console",
+              "Canva"
+            ],
+            "experience": [
+              {
+                "company": "Công ty Truyền thông Sao Việt",
+                "position": "Content Marketing",
+                "duration": "2022 - nay",
+                "description": "Xây dựng 2 fanpage đạt 120.000 người theo dõi, tăng 60% lượng truy cập hữu cơ từ SEO."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Kinh tế Quốc dân",
+                "major": "Marketing",
+                "duration": "2017 - 2021"
+              }
+            ]
+          }
+        }
+      ]
     },
     {
       "email": "timviec3@gmail.com",
       "full_name": "Lê Hoàng Duy",
       "role": "seeker",
-      "phone": "0901234563"
+      "phone": "0901234563",
+      "resumes": [
+        {
+          "title": "CV Frontend Developer (React)",
+          "content": {
+            "full_name": "Lê Hoàng Duy",
+            "phone": "0901234563",
+            "summary": "Frontend Developer 2,5 năm kinh nghiệm với React/TypeScript, chú trọng trải nghiệm người dùng và chất lượng mã nguồn.",
+            "skills": [
+              "React",
+              "TypeScript",
+              "Redux Toolkit",
+              "TailwindCSS",
+              "REST API",
+              "Jest",
+              "Git"
+            ],
+            "experience": [
+              {
+                "company": "Công ty Cổ phần Bảo An",
+                "position": "Frontend Developer",
+                "duration": "2023 - nay",
+                "description": "Phát triển màn hình quản lý đơn hàng với React + TypeScript, tối ưu thời gian tải trang xuống dưới 2 giây."
+              },
+              {
+                "company": "Công ty TNHH Web Xanh",
+                "position": "Fresher Frontend",
+                "duration": "2022 - 2023",
+                "description": "Cắt giao diện từ Figma và xây dựng bộ component dùng chung cho 3 dự án."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Công nghệ - ĐHQGHN",
+                "major": "Công nghệ thông tin",
+                "duration": "2018 - 2022"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CV Web Developer (ReactJS + TypeScript)",
+          "content": {
+            "full_name": "Lê Hoàng Duy",
+            "phone": "0901234563",
+            "summary": "Xây dựng giao diện web quản trị giàu dữ liệu, quen làm việc với REST API và phối hợp nhóm backend theo mô hình Agile.",
+            "skills": [
+              "React",
+              "TypeScript",
+              "React Query",
+              "Ant Design",
+              "Vite",
+              "REST API"
+            ],
+            "experience": [
+              {
+                "company": "Công ty Cổ phần Bảo An",
+                "position": "Web Developer",
+                "duration": "2023 - nay",
+                "description": "Chuẩn hoá luồng xác thực và phân quyền cho hệ thống quản trị nội bộ dùng React Query."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Công nghệ - ĐHQGHN",
+                "major": "Công nghệ thông tin",
+                "duration": "2018 - 2022"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CV Frontend & Mobile Developer (React Native)",
+          "content": {
+            "full_name": "Lê Hoàng Duy",
+            "phone": "0901234563",
+            "summary": "Frontend Developer có kinh nghiệm phụ dự án mobile với React Native, sẵn sàng học nhanh công nghệ mới.",
+            "skills": [
+              "React",
+              "React Native",
+              "TypeScript",
+              "Redux",
+              "Firebase",
+              "REST API"
+            ],
+            "experience": [
+              {
+                "company": "Công ty Cổ phần Bảo An",
+                "position": "Frontend Developer",
+                "duration": "2023 - nay",
+                "description": "Hỗ trợ nhóm mobile dựng màn hình theo dõi đơn hàng bằng React Native và xử lý thông báo đẩy."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Công nghệ - ĐHQGHN",
+                "major": "Công nghệ thông tin",
+                "duration": "2018 - 2022"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "email": "timviec4@gmail.com",
+      "full_name": "Phạm Minh Khôi",
+      "role": "seeker",
+      "phone": "0901234564",
+      "resumes": [
+        {
+          "title": "CV Nhân viên Kinh doanh B2B",
+          "content": {
+            "full_name": "Phạm Minh Khôi",
+            "phone": "0901234564",
+            "summary": "Nhân viên kinh doanh 3 năm kinh nghiệm trong lĩnh vực phân phối, mạnh về tìm kiếm khách hàng doanh nghiệp và chốt hợp đồng.",
+            "skills": [
+              "Sales B2B",
+              "Đàm phán",
+              "CRM",
+              "Excel",
+              "Chăm sóc khách hàng"
+            ],
+            "experience": [
+              {
+                "company": "Công ty TNHH Phân phối Hưng Thịnh",
+                "position": "Nhân viên Kinh doanh",
+                "duration": "2022 - nay",
+                "description": "Phụ trách 45 khách hàng doanh nghiệp, doanh thu năm 2025 đạt 120% chỉ tiêu."
+              },
+              {
+                "company": "Công ty Cổ phần Thương mại Nam Long",
+                "position": "Nhân viên Kinh doanh",
+                "duration": "2021 - 2022",
+                "description": "Phát triển khách hàng mới khu vực miền Nam, đàm phán giá và theo dõi công nợ."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Thương mại",
+                "major": "Quản trị kinh doanh",
+                "duration": "2016 - 2020"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CV Nhân viên Chăm sóc khách hàng",
+          "content": {
+            "full_name": "Phạm Minh Khôi",
+            "phone": "0901234564",
+            "summary": "3 năm chăm sóc khách hàng qua điện thoại/email, xử lý khiếu nại khéo léo và duy trì tỷ lệ hài lòng cao.",
+            "skills": [
+              "CSKH",
+              "Xử lý khiếu nại",
+              "Tổng đài",
+              "Zendesk",
+              "Tin học văn phòng"
+            ],
+            "experience": [
+              {
+                "company": "Công ty TNHH Phân phối Hưng Thịnh",
+                "position": "Chuyên viên CSKH",
+                "duration": "2022 - nay",
+                "description": "Tiếp nhận 60 cuộc gọi mỗi ngày, tỷ lệ hài lòng khách hàng đạt 95%."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Thương mại",
+                "major": "Quản trị kinh doanh",
+                "duration": "2016 - 2020"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CV Marketing & Tổ chức sự kiện",
+          "content": {
+            "full_name": "Phạm Minh Khôi",
+            "phone": "0901234564",
+            "summary": "Có kinh nghiệm tổ chức sự kiện và truyền thông bán hàng: lên kế hoạch, liên hệ nhà cung cấp và vận hành chương trình tại điểm bán.",
+            "skills": [
+              "Tổ chức sự kiện",
+              "Marketing",
+              "Facebook Ads",
+              "Canva",
+              "Điều phối nhân sự"
+            ],
+            "experience": [
+              {
+                "company": "Công ty TNHH Phân phối Hưng Thịnh",
+                "position": "Nhân viên Marketing",
+                "duration": "2022 - nay",
+                "description": "Tổ chức 12 sự kiện trưng bày và ra mắt sản phẩm, phối hợp đội bán hàng đạt mục tiêu doanh số."
+              },
+              {
+                "company": "Công ty Cổ phần Thương mại Nam Long",
+                "position": "Cộng tác viên Marketing",
+                "duration": "2021 - 2022",
+                "description": "Hỗ trợ đăng bài fanpage và chăm sóc khách hàng tại các chương trình khuyến mãi."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Thương mại",
+                "major": "Quản trị kinh doanh",
+                "duration": "2016 - 2020"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "email": "timviec5@gmail.com",
+      "full_name": "Vũ Thị Mai Linh",
+      "role": "seeker",
+      "phone": "0901234565",
+      "resumes": [
+        {
+          "title": "CV Chuyên viên Marketing (F&B)",
+          "content": {
+            "full_name": "Vũ Thị Mai Linh",
+            "phone": "0901234565",
+            "summary": "Chuyên viên Marketing 3 năm trong ngành F&B: xây dựng nội dung, chạy quảng cáo và tổ chức sự kiện ra mắt món mới cho chuỗi cửa hàng.",
+            "skills": [
+              "Marketing F&B",
+              "Facebook Ads",
+              "Content",
+              "Tổ chức sự kiện",
+              "Google Analytics",
+              "Canva"
+            ],
+            "experience": [
+              {
+                "company": "Chuỗi cà phê Bản Việt",
+                "position": "Marketing Executive",
+                "duration": "2022 - nay",
+                "description": "Quản lý fanpage 200.000 người theo dõi và tổ chức 8 sự kiện ra mắt món mới."
+              },
+              {
+                "company": "Nhà hàng Biển Xanh",
+                "position": "Nhân viên Marketing",
+                "duration": "2021 - 2022",
+                "description": "Viết nội dung fanpage và chạy quảng cáo khu vực Hải Phòng cho chi nhánh mới."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Văn hóa Hà Nội",
+                "major": "Quản trị dịch vụ du lịch và khách sạn",
+                "duration": "2017 - 2021"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CV Digital Marketing & Social Media",
+          "content": {
+            "full_name": "Vũ Thị Mai Linh",
+            "phone": "0901234565",
+            "summary": "Mạnh về social media: lên kế hoạch nội dung, quản lý cộng đồng và chạy quảng cáo đa kênh cho thương hiệu dịch vụ.",
+            "skills": [
+              "Social Media",
+              "TikTok Ads",
+              "Content Plan",
+              "Community Management",
+              "CapCut"
+            ],
+            "experience": [
+              {
+                "company": "Chuỗi cà phê Bản Việt",
+                "position": "Chuyên viên Social Media",
+                "duration": "2022 - nay",
+                "description": "Xây dựng kênh TikTok đạt 5 triệu lượt xem trong 6 tháng."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Văn hóa Hà Nội",
+                "major": "Quản trị dịch vụ du lịch và khách sạn",
+                "duration": "2017 - 2021"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CV Nhân viên Tổ chức sự kiện",
+          "content": {
+            "full_name": "Vũ Thị Mai Linh",
+            "phone": "0901234565",
+            "summary": "Kinh nghiệm vận hành sự kiện: lập kế hoạch, điều phối nhân sự và kiểm soát ngân sách chương trình.",
+            "skills": [
+              "Tổ chức sự kiện",
+              "Điều phối",
+              "Đàm phán nhà cung cấp",
+              "Quản lý ngân sách"
+            ],
+            "experience": [
+              {
+                "company": "Chuỗi cà phê Bản Việt",
+                "position": "Điều phối sự kiện",
+                "duration": "2022 - nay",
+                "description": "Điều phối đội 15 người cho sự kiện 1.000 khách, kiểm soát chi phí trong ngân sách đề ra."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học Văn hóa Hà Nội",
+                "major": "Quản trị dịch vụ du lịch và khách sạn",
+                "duration": "2017 - 2021"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "email": "timviec6@gmail.com",
+      "full_name": "Đặng Quốc Bảo",
+      "role": "seeker",
+      "phone": "0901234566",
+      "resumes": [
+        {
+          "title": "CV Mobile Developer (React Native)",
+          "content": {
+            "full_name": "Đặng Quốc Bảo",
+            "phone": "0901234566",
+            "summary": "Lập trình viên Mobile 2 năm kinh nghiệm với React Native, đã phát hành 4 ứng dụng cho khách hàng Nhật Bản và Việt Nam.",
+            "skills": [
+              "React Native",
+              "JavaScript",
+              "TypeScript",
+              "Redux",
+              "REST API",
+              "Firebase"
+            ],
+            "experience": [
+              {
+                "company": "Công ty Cổ phần MobiSoft",
+                "position": "Mobile Developer",
+                "duration": "2024 - nay",
+                "description": "Phát triển ứng dụng giao hàng bằng React Native, xử lý thông báo đẩy và theo dõi đơn hàng thời gian thực."
+              },
+              {
+                "company": "Công ty TNHH AppViệt",
+                "position": "Fresher Mobile",
+                "duration": "2023 - 2024",
+                "description": "Tham gia 2 ứng dụng đặt lịch, sửa lỗi và tối ưu hiệu năng hiển thị danh sách dài."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học FPT",
+                "major": "Kỹ thuật phần mềm",
+                "duration": "2019 - 2023"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CV Lập trình viên Mobile (React Native/Flutter)",
+          "content": {
+            "full_name": "Đặng Quốc Bảo",
+            "phone": "0901234566",
+            "summary": "Quen cả React Native và Flutter, có kinh nghiệm đưa ứng dụng lên App Store/CH Play và làm việc với API backend.",
+            "skills": [
+              "React Native",
+              "Flutter",
+              "Dart",
+              "TypeScript",
+              "CI/CD",
+              "App Store Deployment"
+            ],
+            "experience": [
+              {
+                "company": "Công ty Cổ phần MobiSoft",
+                "position": "Mobile Developer",
+                "duration": "2024 - nay",
+                "description": "Chuyển đổi một module từ Flutter sang React Native, giảm 30% dung lượng ứng dụng."
+              }
+            ],
+            "education": [
+              {
+                "school": "Đại học FPT",
+                "major": "Kỹ thuật phần mềm",
+                "duration": "2019 - 2023"
+              }
+            ]
+          }
+        }
+      ]
     },
     {
       "email": "tuyendung1@gmail.com",
@@ -39,7 +611,16 @@
           "province": "Thành phố Hà Nội",
           "district": "Quận Cầu Giấy",
           "address": "Tòa nhà techcom, số 12 phố Dịch Vọng Hậu",
-          "deadline_after_days": 40
+          "deadline_after_days": 40,
+          "applications": [
+            {
+              "candidate": "timviec1@gmail.com",
+              "resume": "CV Backend Developer (Python/Django)",
+              "cover_letter": "Tôi có 4 năm kinh nghiệm Python/Django và từng xây dựng API cho hệ thống 50.000 người dùng. Tôi mong muốn được tham gia đội ngũ Techcom để phát triển các dịch vụ SaaS quy mô lớn.",
+              "status": "pending",
+              "applied_days_ago": 3
+            }
+          ]
         },
         {
           "title": "Kỹ sư dữ liệu (Data Engineer)",
@@ -69,7 +650,23 @@
           "province": "Thành phố Hà Nội",
           "district": "Quận Cầu Giấy",
           "address": "Tòa nhà techcom, số 12 phố Dịch Vọng Hậu",
-          "deadline_after_days": 35
+          "deadline_after_days": 35,
+          "applications": [
+            {
+              "candidate": "timviec3@gmail.com",
+              "resume": "CV Frontend Developer (React)",
+              "cover_letter": "Tôi có 2,5 năm kinh nghiệm React/TypeScript và quen xây dựng giao diện cho hệ thống quản lý nhiều dữ liệu. Rất mong có cơ hội thử sức tại Techcom.",
+              "status": "pending",
+              "applied_days_ago": 2
+            },
+            {
+              "candidate": "timviec6@gmail.com",
+              "resume": "CV Mobile Developer (React Native)",
+              "cover_letter": "Kinh nghiệm React Native giúp tôi nắm chắc React và tư duy component. Tôi muốn chuyển hướng sang phát triển web và thấy vị trí này rất phù hợp.",
+              "status": "pending",
+              "applied_days_ago": 1
+            }
+          ]
         },
         {
           "title": "QA/QC Engineer",
@@ -124,7 +721,16 @@
           "province": "Thành phố Hồ Chí Minh",
           "district": "Quận 1",
           "address": "Số 45 đường Lê Thánh Tôn",
-          "deadline_after_days": 35
+          "deadline_after_days": 35,
+          "applications": [
+            {
+              "candidate": "timviec4@gmail.com",
+              "resume": "CV Nhân viên Kinh doanh B2B",
+              "cover_letter": "Với 3 năm kinh doanh B2B trong ngành phân phối, tôi tin mình có thể nhanh chóng mở rộng tập khách hàng doanh nghiệp khu vực miền Nam cho Minh Phát.",
+              "status": "reviewed",
+              "applied_days_ago": 8
+            }
+          ]
         },
         {
           "title": "Chuyên viên Digital Marketing",
@@ -139,7 +745,23 @@
           "province": "Thành phố Hồ Chí Minh",
           "district": "Quận 3",
           "address": "Số 120 đường Võ Văn Tần",
-          "deadline_after_days": 40
+          "deadline_after_days": 40,
+          "applications": [
+            {
+              "candidate": "timviec2@gmail.com",
+              "resume": "CV Digital Marketing",
+              "cover_letter": "Tôi có 3 năm vận hành quảng cáo Google/Facebook với ngân sách 300 triệu mỗi tháng và kinh nghiệm tối ưu SEO cho website thương mại điện tử.",
+              "status": "pending",
+              "applied_days_ago": 4
+            },
+            {
+              "candidate": "timviec5@gmail.com",
+              "resume": "CV Digital Marketing & Social Media",
+              "cover_letter": "Tôi mạnh về social media và từng xây dựng kênh TikTok đạt 5 triệu lượt xem. Tôi mong muốn ứng tuyển vào vị trí Digital Marketing của công ty.",
+              "status": "reviewed",
+              "applied_days_ago": 6
+            }
+          ]
         },
         {
           "title": "Nhân viên Chăm sóc khách hàng",
@@ -335,7 +957,30 @@
           "salary_period": "Monthly",
           "province": "Toàn Quốc",
           "district": "Toàn Quốc",
-          "deadline_after_days": 40
+          "deadline_after_days": 40,
+          "applications": [
+            {
+              "candidate": "timviec1@gmail.com",
+              "resume": "CV Full-stack Developer (Python + React)",
+              "cover_letter": "Tôi có nền tảng JavaScript/TypeScript vững và từng tham gia phát triển sản phẩm SaaS. Tôi muốn mở rộng sang mảng mobile trong môi trường làm việc từ xa.",
+              "status": "shortlisted",
+              "applied_days_ago": 12
+            },
+            {
+              "candidate": "timviec3@gmail.com",
+              "resume": "CV Web Developer (ReactJS + TypeScript)",
+              "cover_letter": "Tôi từng làm việc với ReactJS/TypeScript và có kiến thức về React Native. Tôi sẵn sàng học nhanh để đáp ứng yêu cầu dự án cho khách hàng nước ngoài.",
+              "status": "pending",
+              "applied_days_ago": 5
+            },
+            {
+              "candidate": "timviec6@gmail.com",
+              "resume": "CV Mobile Developer (React Native)",
+              "cover_letter": "Tôi đã phát hành 4 ứng dụng React Native cho khách hàng Nhật Bản, tự tin giao tiếp tiếng Anh cơ bản trong công việc.",
+              "status": "reviewed",
+              "applied_days_ago": 10
+            }
+          ]
         },
         {
           "title": "Fullstack Developer (Node.js + React)",
@@ -537,7 +1182,30 @@
           "province": "Thành phố Hải Phòng",
           "district": "Quận Lê Chân",
           "address": "Số 25 đường Cát Dài",
-          "deadline_after_days": 35
+          "deadline_after_days": 35,
+          "applications": [
+            {
+              "candidate": "timviec5@gmail.com",
+              "resume": "CV Chuyên viên Marketing (F&B)",
+              "cover_letter": "Tôi có 3 năm làm marketing trong ngành F&B, quen tổ chức sự kiện ra mắt món mới và quản lý fanpage chuỗi cửa hàng.",
+              "status": "pending",
+              "applied_days_ago": 2
+            },
+            {
+              "candidate": "timviec2@gmail.com",
+              "resume": "CV Content Marketing & SEO",
+              "cover_letter": "Kinh nghiệm content chuẩn SEO và phát triển fanpage sẽ giúp tôi triển khai nội dung cho chuỗi nhà hàng của công ty.",
+              "status": "shortlisted",
+              "applied_days_ago": 9
+            },
+            {
+              "candidate": "timviec4@gmail.com",
+              "resume": "CV Marketing & Tổ chức sự kiện",
+              "cover_letter": "Tôi từng tổ chức 12 sự kiện trưng bày và ra mắt sản phẩm, mong muốn tham gia đội Marketing của Sài Gòn Xanh.",
+              "status": "rejected",
+              "applied_days_ago": 15
+            }
+          ]
         },
         {
           "title": "Thu ngân",
