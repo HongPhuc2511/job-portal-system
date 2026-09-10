@@ -13,7 +13,7 @@ from src.modules.auth.models import User
 from src.modules.location import District, Province
 from src.modules.location.schemas import DistrictResponse, ProvinceResponse
 
-from .enums import ExperienceLevel, JobType, SalaryPeriod, WorkModel
+from .enums import ExperienceLevel, JobPostStatus, JobType, SalaryPeriod, WorkModel
 from .models import JobPost
 
 # Tên bản ghi neo cho job remote / toàn quốc - tìm theo name (unique)
@@ -102,6 +102,14 @@ class EmployerInfo(SQLAlchemyAutoSchema):
 
 
 class JobPostResponse(SQLAlchemyAutoSchema):
+    class ApplicationStats(Schema):
+        """Số lượng hồ sơ ứng tuyển của bài đăng (tổng + theo trạng thái)"""
+
+        total = fields.Integer(metadata={"description": "Tổng số hồ sơ đã nộp"})
+        pending = fields.Integer(metadata={"description": "Đang chờ"})
+        approved = fields.Integer(metadata={"description": "Đã duyệt"})
+        rejected = fields.Integer(metadata={"description": "Từ chối"})
+
     class Meta:
         model = JobPost
         sqla_session = db.session
@@ -120,13 +128,43 @@ class JobPostResponse(SQLAlchemyAutoSchema):
     province = fields.Nested(ProvinceResponse, dump_only=True)
     district = fields.Nested(DistrictResponse, dump_only=True)
 
+    application_stats = fields.Nested(
+        ApplicationStats,
+        dump_only=True,
+        dump_default={"total": 0, "pending": 0, "approved": 0, "rejected": 0},
+    )
+
+    application_stats = fields.Method("_get_application_stats", dump_only=True)
+
+    @staticmethod
+    def _get_application_stats(obj):
+        stats = getattr(obj, "application_stats", None)
+        if stats is None:
+            return {"total": 0, "pending": 0, "approved": 0, "rejected": 0}
+        return stats
+
+
 class EmployerDashboardResponse(Schema):
     total_posts = fields.Integer()
     active_posts = fields.Integer()
     total_applications = fields.Integer()
     pending_applications = fields.Integer()
 
+
 class ApplyJobRequest(Schema):
-    """Schema cho chức năng nộp CV ứng tuyển"""
+    """
+    Schema cho chức năng nộp CV ứng tuyển
+    """
+
     resume_id = fields.Integer(required=True, validate=validate.Range(min=1))
     cover_letter = fields.String(allow_none=True)
+
+
+class JobPostStatusUpdateRequest(Schema):
+    """Đóng / mở lại bài đăng tuyển dụng (vd: đã tuyển đủ người)"""
+
+    status = fields.Enum(
+        JobPostStatus,
+        required=True,
+        validate=validate.OneOf([JobPostStatus.ACTIVE, JobPostStatus.CLOSED]),
+    )

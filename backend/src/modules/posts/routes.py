@@ -9,18 +9,27 @@ from sqlalchemy import and_, func, or_, select
 from sqlalchemy.orm import joinedload
 
 from src.extensions import db
+from src.modules.application.enums import ApplicationStatus
+from src.modules.application.models import Application
+from src.modules.application.schemas import JobPostApplicationResponse
+from src.modules.application.services import (
+    attach_application_stats,
+    reject_pending_applications,
+)
 from src.modules.auth.decorators import role_required
 from src.modules.auth.enums import UserRole
 from src.modules.auth.models import User
-from src.modules.jobs.models import Application, Resume
-from src.modules.jobs.enums import ApplicationStatus
-from src.modules.jobs.schemas import ApplicationResponse
+from src.modules.resume.models import Resume
 
 from .enums import JobPostStatus
 from .models import JobPost
-from .schemas import JobPostRequest, JobPostResponse, EmployerDashboardResponse, ApplyJobRequest
-from ..jobs.enums import ApplicationStatus
-from ..jobs.models import Application
+from .schemas import (
+    ApplyJobRequest,
+    EmployerDashboardResponse,
+    JobPostRequest,
+    JobPostResponse,
+    JobPostStatusUpdateRequest,
+)
 
 job_posts_bp = Blueprint(
     "job-posts",
@@ -87,7 +96,9 @@ def get_latest_jobs(pagination_parameters: PaginationParameters):
         .offset(pagination_parameters.first_item)
         .limit(pagination_parameters.page_size)
     )
-    return db.session.scalars(stmt).all()
+    items = db.session.scalars(stmt).all()
+    attach_application_stats(items)
+    return items
 
 
 @job_posts_bp.route("/employer/<int:employer_id>", methods=["GET"])
@@ -110,7 +121,9 @@ def get_employer_posts(employer_id: int, pagination_parameters: PaginationParame
         .offset(pagination_parameters.first_item)
         .limit(pagination_parameters.page_size)
     )
-    return db.session.scalars(stmt).all()
+    items = db.session.scalars(stmt).all()
+    attach_application_stats(items)
+    return items
 
 
 @job_posts_bp.route("/", methods=["POST"])
@@ -161,6 +174,7 @@ def delete_job_post(post_id: int):
     db.session.commit()
     return {"message": "Xóa bài đăng thành công"}
 
+
 @job_posts_bp.route("/<int:post_id>", methods=["GET"])
 @job_posts_bp.response(200, schema=JobPostResponse)
 def get_job_post(post_id: int):
@@ -168,25 +182,61 @@ def get_job_post(post_id: int):
     Xem thông tin chi tiết của một bài đăng tuyển dụng (Public)
     """
     job = db.session.get(
-        JobPost, 
+        JobPost,
         post_id,
         options=[
             joinedload(JobPost.province),
             joinedload(JobPost.district),
             joinedload(JobPost.employer),
-        ]
+        ],
     )
-    
+
     if job is None:
         abort(404, message="Bài đăng không tồn tại")
-        
+
+    attach_application_stats([job])
     return job
+
+
+@job_posts_bp.route("/<int:post_id>/applications", methods=["GET"])
+@role_required(UserRole.EMPLOYER)
+@job_posts_bp.response(200, schema=JobPostApplicationResponse(many=True))
+def list_post_applications(post_id: int):
+    """
+    Nhà tuyển dụng xem danh sách hồ sơ ứng tuyển của một bài đăng
+    """
+    employer_id = int(get_jwt_identity())
+
+    job = db.session.get(JobPost, post_id)
+    if job is None:
+        abort(404, message="Bài đăng không tồn tại")
+    if job.employer_id != employer_id:
+        abort(403, message="Bạn không có quyền xem hồ sơ của bài đăng này")
+
+    status_value = request.args.get("status", type=str)
+    filters = [Application.job_post_id == post_id]
+    if status_value:
+        if status_value not in {s.value for s in ApplicationStatus}:
+            abort(400, message="Trạng thái hồ sơ không hợp lệ")
+        filters.append(Application.status == ApplicationStatus(status_value))
+
+    stmt = (
+        select(Application)
+        .options(
+            joinedload(Application.candidate),
+            joinedload(Application.resume),
+        )
+        .where(*filters)
+        .order_by(Application.created_at.desc())
+    )
+    return db.session.scalars(stmt).all()
+
 
 @job_posts_bp.route("/dashboard", methods=["GET"])
 @role_required(UserRole.EMPLOYER)
 @job_posts_bp.response(200, schema=EmployerDashboardResponse)
 def get_employer_dashboard():
-    """Tổng quan dashboard của nhà tuyển dụng """
+    """Tổng quan dashboard của nhà tuyển dụng"""
     employer_id = int(get_jwt_identity())
 
     total_posts = db.session.scalar(
@@ -243,46 +293,45 @@ def apply_job(data, post_id: int):
 
     existing_app = db.session.scalars(
         select(Application).where(
-            Application.candidate_id == candidate_id,
-            Application.job_post_id == post_id
+            Application.candidate_id == candidate_id, Application.job_post_id == post_id
         )
     ).first()
-    
+
     if existing_app:
-        abort(400, message="Bạn đã nộp hồ sơ vào vị trí này rồi. Vui lòng chờ phản hồi!")
+        abort(
+            400, message="Bạn đã nộp hồ sơ vào vị trí này rồi. Vui lòng chờ phản hồi!"
+        )
 
     application = Application(
         candidate_id=candidate_id,
         job_post_id=post_id,
         resume_id=data["resume_id"],
         cover_letter=data.get("cover_letter"),
-        status=ApplicationStatus.PENDING
+        status=ApplicationStatus.PENDING,
     )
     db.session.add(application)
     db.session.commit()
-    
+
     return {"message": "Ứng tuyển thành công"}
 
 
-@job_posts_bp.route("/applied", methods=["GET"])
-@role_required(UserRole.SEEKER)
-@job_posts_bp.response(200, schema=ApplicationResponse(many=True))
-def get_applied_jobs():
+@job_posts_bp.route("/<int:post_id>/status", methods=["PATCH"])
+@job_posts_bp.arguments(JobPostStatusUpdateRequest)
+@role_required(UserRole.EMPLOYER)
+@job_posts_bp.response(200, schema=JobPostResponse)
+def update_job_post_status(data, post_id: int):
     """
-    Ứng viên xem danh sách các công việc đã ứng tuyển
+    Đóng / mở lại bài đăng tuyển dụng.
+    Khi đóng bài đăng, toàn bộ hồ sơ đang chờ tự chuyển sang 'Từ chối'.
     """
-    candidate_id = int(get_jwt_identity())
-    
-    stmt = (
-        select(Application)
-        .options(
-            joinedload(Application.job_post).joinedload(JobPost.employer),
-            joinedload(Application.job_post).joinedload(JobPost.province),
-            joinedload(Application.job_post).joinedload(JobPost.district),
-            joinedload(Application.resume)
-        )
-        .where(Application.candidate_id == candidate_id)
-        .order_by(Application.created_at.desc())
-    )
-    
-    return db.session.scalars(stmt).all()
+    job = db.session.get(JobPost, post_id)
+    if job is None:
+        abort(404, message="Bài đăng không tồn tại")
+    if job.employer_id != int(get_jwt_identity()):
+        abort(403, message="Bạn không có quyền sửa bài đăng này")
+
+    job.status = data["status"]
+    if data["status"] == JobPostStatus.CLOSED:
+        reject_pending_applications(job.id)
+    db.session.commit()
+    return job

@@ -3,12 +3,15 @@ import {
 	BriefcaseIcon,
 	ClockIcon,
 	FileTextIcon,
+	LockIcon,
 	PlusIcon,
+	RotateCcwIcon,
 	TrendingUpIcon,
 	TriangleAlertIcon,
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useUpdatePostStatus } from "@/api/application-api";
 import {
 	useDeletePost,
 	useGetEmployerPosts,
@@ -157,6 +160,9 @@ function EmployerPostList({ employerId }: { employerId: number }) {
 	const queryClient = useQueryClient();
 
 	const [postToDelete, setPostToDelete] = useState<JobPost | null>(null);
+	const [postToToggleStatus, setPostToToggleStatus] = useState<JobPost | null>(
+		null,
+	);
 
 	if (postsQuery.status === "pending") return <JobPostSkeletons />;
 
@@ -206,6 +212,7 @@ function EmployerPostList({ employerId }: { employerId: number }) {
 							post={post}
 							isManager
 							onDeleteRequest={setPostToDelete}
+							onCloseRequest={setPostToToggleStatus}
 						/>
 					))
 				)}
@@ -222,6 +229,15 @@ function EmployerPostList({ employerId }: { employerId: number }) {
 					if (!open) setPostToDelete(null);
 				}}
 				onDeleted={handlePostDeleted}
+			/>
+
+			<TogglePostStatusDialog
+				key={postToToggleStatus?.id ?? 0}
+				post={postToToggleStatus}
+				onOpenChange={(open) => {
+					if (!open) setPostToToggleStatus(null);
+				}}
+				onStatusChanged={() => setPostToToggleStatus(null)}
 			/>
 		</>
 	);
@@ -272,6 +288,13 @@ function DeletingDialog({
 					<AlertDialogDescription>
 						Bạn có chắc chắn muốn xoá bài đăng “{post?.title}”? Hành động này
 						không thể hoàn tác.
+						{post != null && post.application_stats.total > 0 && (
+							<>
+								{" "}
+								Bài đăng đang có {post.application_stats.total} hồ sơ ứng tuyển
+								và chúng sẽ bị xoá theo.
+							</>
+						)}
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 
@@ -294,6 +317,102 @@ function DeletingDialog({
 						onClick={confirmDelete}
 					>
 						{deletePost.isPending ? "Đang xoá..." : "Xoá bài đăng"}
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+	);
+}
+
+function TogglePostStatusDialog({
+	post,
+	onOpenChange,
+	onStatusChanged,
+}: {
+	post: JobPost | null;
+	onOpenChange: (open: boolean) => void;
+	onStatusChanged?: () => void;
+}) {
+	const toggleStatus = useUpdatePostStatus();
+	const [statusError, setStatusError] = useState<string | null>(null);
+	const open = post != null;
+	const isClosing = post?.status === "ACTIVE";
+
+	const handleOpenChange = (nextOpen: boolean) => {
+		// Không cho đóng dialog (Esc/bấm ra ngoài) trong lúc đang xử lý.
+		if (!nextOpen && toggleStatus.isPending) return;
+		onOpenChange(nextOpen);
+	};
+
+	const confirmToggle = async () => {
+		if (!post) return;
+		setStatusError(null);
+		try {
+			await toggleStatus.mutateAsync({
+				postId: post.id,
+				status: isClosing ? "CLOSED" : "ACTIVE",
+			});
+			toast.add({
+				type: "success",
+				title: isClosing ? "Đã đóng bài đăng" : "Đã mở lại bài đăng",
+			});
+			onStatusChanged?.();
+		} catch (rawError) {
+			const error = extractBackendErrors(rawError);
+			setStatusError(
+				error.globalErrors[0] ?? "Thao tác thất bại. Vui lòng thử lại.",
+			);
+		}
+	};
+
+	const pendingCount = post?.application_stats.pending ?? 0;
+
+	return (
+		<AlertDialog open={open} onOpenChange={handleOpenChange}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogMedia>
+						{isClosing ? (
+							<LockIcon className="text-destructive" />
+						) : (
+							<RotateCcwIcon />
+						)}
+					</AlertDialogMedia>
+					<AlertDialogTitle>
+						{isClosing ? "Đóng bài đăng?" : "Mở lại tuyển dụng?"}
+					</AlertDialogTitle>
+					<AlertDialogDescription>
+						{isClosing
+							? pendingCount > 0
+								? `Bài đăng “${post?.title}” đang có ${pendingCount} hồ sơ chờ duyệt — đóng sẽ tự động chuyển chúng sang “Từ chối”. Bạn có chắc chắn?`
+								: `Đóng bài đăng “${post?.title}” sẽ ngừng nhận hồ sơ mới. Bạn có chắc chắn?`
+							: `Bài đăng “${post?.title}” sẽ xuất hiện trở lại trong danh sách tuyển dụng và ứng viên có thể nộp hồ sơ.`}
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+
+				{statusError && (
+					<p
+						role="alert"
+						className="text-center text-sm font-medium text-destructive"
+					>
+						{statusError}
+					</p>
+				)}
+
+				<AlertDialogFooter>
+					<AlertDialogCancel disabled={toggleStatus.isPending}>
+						Huỷ bỏ
+					</AlertDialogCancel>
+					<AlertDialogAction
+						variant={isClosing ? "destructive" : "default"}
+						disabled={toggleStatus.isPending}
+						onClick={confirmToggle}
+					>
+						{toggleStatus.isPending
+							? "Đang xử lý..."
+							: isClosing
+								? "Đóng bài đăng"
+								: "Mở lại tuyển dụng"}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

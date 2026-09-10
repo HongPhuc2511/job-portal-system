@@ -147,7 +147,7 @@ function UserButton() {
 							<DropdownMenuItem render={<Link to="/resumes" />}>
 								<FileUserIcon /> Quản lý CV
 							</DropdownMenuItem>
-							<DropdownMenuItem render={<Link to="/applied-jobs" />}>
+							<DropdownMenuItem render={<Link to="/my-applications" />}>
 								<BriefcaseIcon /> Việc làm đã ứng tuyển
 							</DropdownMenuItem>
 						</DropdownMenuGroup>

@@ -63,6 +63,14 @@ export const WORK_MODELS_MAP = {
 };
 export type WorkModel = (typeof WORK_MODELS)[number];
 
+/** Số lượng hồ sơ ứng tuyển của một bài đăng (total = pending + approved + rejected). */
+export type ApplicationStats = {
+	total: number;
+	pending: number;
+	approved: number;
+	rejected: number;
+};
+
 export type JobPost = {
 	id: number;
 	created_at: string;
@@ -87,4 +95,5 @@ export type JobPost = {
 	employer_id: number;
 	employer: EmployerPublicProfile;
 	display_salary: string;
+	application_stats: ApplicationStats;
 };
