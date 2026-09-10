@@ -1,6 +1,8 @@
+from flask import current_app
+from flask_mail import Message
 from sqlalchemy import func, select, update
 
-from src.extensions import db
+from src.extensions import db, mail
 
 from .enums import ApplicationStatus
 from .models import Application
@@ -53,3 +55,22 @@ def attach_application_stats(posts) -> None:
 
     for post in posts:
         post.application_stats = stats_by_post[post.id]
+
+def send_new_application_email(application: Application) -> None:
+    """Gửi email báo nhà tuyển dụng có ứng viên mới nộp hồ sơ."""
+    employer = application.job_post.employer
+    msg = Message(
+        subject=f"[JobPortal] Ung vien moi cho tin '{application.job_post.title}'",
+        recipients=[employer.email],
+        body=(
+            f"Xin chao {employer.full_name},\n\n"
+            f"Ung vien {application.candidate.full_name} vua nop ho so ung tuyen "
+            f"vao tin '{application.job_post.title}' cua ban.\n"
+            f"Vui long dang nhap he thong de xem chi tiet va duyet ho so.\n\n"
+            f"Tran trong,\nJobPortal"
+        ),
+    )
+    try:
+        mail.send(msg)
+    except Exception as e:
+        current_app.logger.error(f"Loi gui email ung vien moi: {e}")

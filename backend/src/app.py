@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, app
 from flask_cors import CORS
 
 import src.modules.application.models
@@ -6,7 +6,7 @@ import src.modules.auth.models
 import src.modules.location.models
 import src.modules.resume.models  # noqa: F401
 from src.config import Config
-from src.extensions import api_document, db, jwt, ma, migrate
+from src.extensions import api_document, db, jwt, ma, migrate,mail
 from src.modules.application.routes import applications_bp
 
 from .modules.auth.routes import auth_bp
@@ -14,7 +14,7 @@ from .modules.location.routes import location_bp
 from .modules.posts.routes import job_posts_bp
 from .modules.resume.routes import resumes_bp
 
-
+mail.init_app(app)
 def create_app() -> Flask:
     app = Flask(__name__)
     CORS(
