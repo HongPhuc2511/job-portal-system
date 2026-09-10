@@ -6,6 +6,7 @@ import EmployerPostsPage from "@/pages/employer-posts";
 import { Home } from "@/pages/home";
 import Login from "@/pages/login";
 import MyApplicationsPage from "@/pages/my-applications";
+import PostApplicationsPage from "@/pages/post-applications";
 import PostCreatePage from "@/pages/post-create";
 import PostDetailPage from "@/pages/post-detail";
 import PostEditPage from "@/pages/post-edit";
@@ -68,6 +69,14 @@ export function App() {
 						}
 					/>
 					<Route path="/manage-posts/create" element={<PostCreatePage />} />
+					<Route
+						path="/manage-posts/:postId/applications"
+						element={
+							<ProtectedRoute>
+								<PostApplicationsPage />
+							</ProtectedRoute>
+						}
+					/>
 					<Route
 						path="/posts/:id/edit"
 						element={

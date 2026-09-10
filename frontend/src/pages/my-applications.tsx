@@ -6,13 +6,12 @@ import {
 	MapPinIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useGetMyApplications } from "@/api/post-api";
+import { useGetMyApplications } from "@/api/application-api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDisplayDate } from "@/lib/datetime";
-import { formatSalary } from "@/lib/salary";
 import { APPLICATION_STATUS_MAP } from "@/types/application";
 
 export default function MyApplicationsPage() {
@@ -103,10 +102,7 @@ export default function MyApplicationsPage() {
 												{isRemote ? "Toàn Quốc" : app.job_post.province.name}
 											</span>
 											<span className="flex items-center gap-1 text-green-700 font-medium">
-												{formatSalary(
-													app.job_post.salary_min,
-													app.job_post.salary_max,
-												)}
+												{app.job_post.display_salary}
 											</span>
 										</div>
 									</div>

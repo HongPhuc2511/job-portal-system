@@ -6,6 +6,7 @@ import {
 	SquarePenIcon,
 	Trash2Icon,
 	Users2Icon,
+	UsersIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -63,6 +64,13 @@ export function JobPostCard({
 
 				{isManager && (
 					<div className="flex items-center gap-2 ml-auto">
+						<Button
+							variant="outline"
+							render={<Link to={`/manage-posts/${post.id}/applications`} />}
+						>
+							<UsersIcon /> Xem hồ sơ
+						</Button>
+
 						<Button
 							variant="outline"
 							render={<Link to={`/posts/${post.id}/edit`} state={{ post }} />}

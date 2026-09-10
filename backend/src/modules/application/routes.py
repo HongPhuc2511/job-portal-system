@@ -62,7 +62,7 @@ def update_application_status(data, application_id: int):
         options=[
             joinedload(Application.candidate),
             joinedload(Application.resume),
-            joinedload(Application.job_post),
+            joinedload(Application.job_post).joinedload(JobPost.employer),
         ],
     )
     if application is None:

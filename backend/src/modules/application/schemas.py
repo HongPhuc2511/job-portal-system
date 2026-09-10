@@ -4,6 +4,7 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from src.extensions import db
 from src.modules.location.schemas import DistrictResponse, ProvinceResponse
 from src.modules.posts.models import JobPost
+from src.modules.posts.schemas import EmployerInfo
 from src.modules.resume.schemas import ResumeResponse
 
 from .enums import ApplicationStatus
@@ -59,6 +60,7 @@ class ApplicationResponse(Schema):
 
         province = fields.Nested(ProvinceResponse, dump_only=True)
         district = fields.Nested(DistrictResponse, dump_only=True)
+        employer = fields.Nested(EmployerInfo, dump_only=True)
 
     id = fields.Integer()
     created_at = fields.DateTime()
