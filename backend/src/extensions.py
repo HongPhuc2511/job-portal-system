@@ -8,8 +8,9 @@ from flask_smorest import Api as ApiDocument
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from webargs.flaskparser import parser
+from flask_mail import Mail
 
-
+mail = Mail()
 class Base(DeclarativeBase):
     pass
 

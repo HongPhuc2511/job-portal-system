@@ -4,6 +4,7 @@ from flask_smorest.blueprint import Blueprint
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
+from src.modules.application.services import send_application_status_email
 from src.extensions import db
 from src.modules.application.models import Application
 from src.modules.application.schemas import (
@@ -73,4 +74,5 @@ def update_application_status(data, application_id: int):
 
     application.status = data["status"]
     db.session.commit()
+    send_application_status_email(application)
     return application

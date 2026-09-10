@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, app
 from flask_cors import CORS
 
 import src.modules.application.models
@@ -6,7 +6,7 @@ import src.modules.auth.models
 import src.modules.location.models
 import src.modules.resume.models  # noqa: F401
 from src.config import Config
-from src.extensions import api_document, db, jwt, ma, migrate
+from src.extensions import api_document, db, jwt, ma, migrate,mail
 from src.modules.application.routes import applications_bp
 
 from .modules.auth.routes import auth_bp
@@ -32,6 +32,7 @@ def create_app() -> Flask:
     migrate.init_app(app, db)
     jwt.init_app(app)
     api_document.init_app(app)
+    mail.init_app(app)
 
     api_document.register_blueprint(applications_bp)
     api_document.register_blueprint(auth_bp)

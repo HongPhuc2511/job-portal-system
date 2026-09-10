@@ -1,6 +1,8 @@
+from flask import current_app
+from flask_mail import Message
 from sqlalchemy import func, select, update
 
-from src.extensions import db
+from src.extensions import db, mail
 
 from .enums import ApplicationStatus
 from .models import Application
@@ -53,3 +55,45 @@ def attach_application_stats(posts) -> None:
 
     for post in posts:
         post.application_stats = stats_by_post[post.id]
+
+def send_new_application_email(application: Application) -> None:
+    """Gửi email báo nhà tuyển dụng có ứng viên mới nộp hồ sơ."""
+    employer = application.job_post.employer
+    msg = Message(
+        subject=f"[JobPortal] Ung vien moi cho tin '{application.job_post.title}'",
+        recipients=[employer.email],
+        body=(
+            f"Xin chào {employer.full_name},\n\n"
+            f"Ứng viên {application.candidate.full_name} vừa nộp hồ sơ ứng tuyển "
+            f"vào tin '{application.job_post.title}' của bạn.\n"
+            f"Vui lòng đăng nhập hệ thống để xem chi tiết hồ sơ.\n\n"
+            f"Trân trọng,\nJobPortal"
+        ),
+    )
+    try:
+        mail.send(msg)
+    except Exception as e:
+        current_app.logger.error(f"Lời gửi email ứng viên mới: {e}")
+
+def send_application_status_email(application: Application) -> None:
+    """Gửi email báo ứng viên ket quả duyệt hồ sơ"""
+    status_text = {
+        ApplicationStatus.APPROVED: "Được chấp nhận",
+        ApplicationStatus.REJECTED: "Không phù hợp voi vị trí này",
+    }.get(application.status, application.status.value)
+
+    candidate = application.candidate
+    msg = Message(
+        subject=f"[JobPortal] Cập nhật hồ sơ ứng tuyển '{application.job_post.title}'",
+        recipients=[candidate.email],
+        body=(
+            f"Xin chào {candidate.full_name},\n\n"
+            f"Hồ sơ của bạn ứng tuyển vào tin '{application.job_post.title}' {status_text}.\n"
+            f"Vui lòng đăng nhập để xem chi tiết.\n\n"
+            f"Tran trọng,\nJobPortal"
+        ),
+    )
+    try:
+        mail.send(msg)
+    except Exception as e:
+        current_app.logger.error(f"Lời gửi email cap nhat trang thai: {e}")
