@@ -1,8 +1,19 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { PlusIcon, TriangleAlertIcon } from "lucide-react";
+import {
+	BriefcaseIcon,
+	ClockIcon,
+	FileTextIcon,
+	PlusIcon,
+	TrendingUpIcon,
+	TriangleAlertIcon,
+} from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useDeletePost, useGetEmployerPosts } from "@/api/post-api";
+import {
+	useDeletePost,
+	useGetEmployerPosts,
+	useGetEmployerStats,
+} from "@/api/post-api";
 import { AutoPagination } from "@/components/auto-pagination";
 import { JobPostCard, JobPostSkeletons } from "@/components/job-post-card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -18,6 +29,9 @@ import {
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Description } from "@/components/ui/description";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
 import { useAuth } from "@/context/auth-context";
 import { extractBackendErrors } from "@/lib/backend-error";
@@ -33,10 +47,12 @@ export default function EmployerPostsPage() {
 	}
 
 	return (
-		<main className="mx-auto max-w-3xl pt-4">
+		<main className="mx-auto max-w-4xl pt-10 px-4">
+			<EmployerStats />
+
 			<div className="flex items-center justify-between gap-4">
-				<h3 className="font-bold text-lg">Quản lý bài đăng</h3>
-				<Button render={<Link to="/posts/create" />}>
+				<h3 className="font-bold text-xl">Quản lý bài đăng</h3>
+				<Button render={<Link to="/manage-posts/create" />}>
 					<PlusIcon data-icon="inline-start" />
 					Tạo bài đăng mới
 				</Button>
@@ -46,6 +62,92 @@ export default function EmployerPostsPage() {
 				<EmployerPostList employerId={user.id} />
 			</div>
 		</main>
+	);
+}
+
+type StatCard = {
+	label: string;
+	icon: React.ComponentType;
+	key:
+		| "total_posts"
+		| "active_posts"
+		| "total_applications"
+		| "pending_applications";
+};
+
+const STAT_CARDS: StatCard[] = [
+	{
+		label: "Tổng tin đã đăng",
+		icon: BriefcaseIcon,
+		key: "total_posts",
+	},
+	{
+		label: "Tin đang tuyển",
+		icon: TrendingUpIcon,
+		key: "active_posts",
+	},
+	{
+		label: "Tổng CV nhận được",
+		icon: FileTextIcon,
+		key: "total_applications",
+	},
+	{
+		label: "Hồ sơ chờ duyệt",
+		icon: ClockIcon,
+		key: "pending_applications",
+	},
+];
+
+export function EmployerStats() {
+	const { data: stats, status, error } = useGetEmployerStats();
+
+	const cards = STAT_CARDS.map((card) => ({
+		...card,
+		value: stats?.[card.key],
+	}));
+
+	let content: React.ReactNode;
+
+	switch (status) {
+		case "pending":
+			content = cards.map((card) => (
+				<Card className="p-4 rounded-sm h-23">
+					<div className="flex flex-col gap-2">
+						<Description className="text-muted-foreground gap-1.5">
+							<card.icon /> {card.label}
+						</Description>
+						<Skeleton className="h-8 " />
+					</div>
+				</Card>
+			));
+			break;
+		case "error":
+			content = (
+				<Alert variant="destructive" className="col-span-full h-23">
+					<AlertDescription>{error?.message}</AlertDescription>
+				</Alert>
+			);
+			break;
+		default:
+			content = cards.map((card) => (
+				<Card className="p-4 rounded-sm" key={card.label}>
+					<div className="flex flex-col gap-2">
+						<Description className="text-muted-foreground gap-1.5">
+							<card.icon /> {card.label}
+						</Description>
+
+						<div className="text-2xl tracking-tight font-bold">
+							{card.value}
+						</div>
+					</div>
+				</Card>
+			));
+	}
+
+	return (
+		<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 pb-8">
+			{content}
+		</div>
 	);
 }
 
