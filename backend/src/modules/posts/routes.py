@@ -1,4 +1,3 @@
-from src.modules.application.services import reject_pending_applications
 from datetime import datetime
 
 from flask import request
@@ -13,6 +12,10 @@ from src.extensions import db
 from src.modules.application.enums import ApplicationStatus
 from src.modules.application.models import Application
 from src.modules.application.schemas import JobPostApplicationResponse
+from src.modules.application.services import (
+    attach_application_stats,
+    reject_pending_applications,
+)
 from src.modules.auth.decorators import role_required
 from src.modules.auth.enums import UserRole
 from src.modules.auth.models import User
@@ -93,7 +96,9 @@ def get_latest_jobs(pagination_parameters: PaginationParameters):
         .offset(pagination_parameters.first_item)
         .limit(pagination_parameters.page_size)
     )
-    return db.session.scalars(stmt).all()
+    items = db.session.scalars(stmt).all()
+    attach_application_stats(items)
+    return items
 
 
 @job_posts_bp.route("/employer/<int:employer_id>", methods=["GET"])
@@ -116,7 +121,9 @@ def get_employer_posts(employer_id: int, pagination_parameters: PaginationParame
         .offset(pagination_parameters.first_item)
         .limit(pagination_parameters.page_size)
     )
-    return db.session.scalars(stmt).all()
+    items = db.session.scalars(stmt).all()
+    attach_application_stats(items)
+    return items
 
 
 @job_posts_bp.route("/", methods=["POST"])
@@ -187,6 +194,7 @@ def get_job_post(post_id: int):
     if job is None:
         abort(404, message="Bài đăng không tồn tại")
 
+    attach_application_stats([job])
     return job
 
 

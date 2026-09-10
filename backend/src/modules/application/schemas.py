@@ -15,7 +15,11 @@ class ApplicationStatusUpdateRequest(Schema):
     Cập nhật trạng thái xử lý hồ sơ (pending / approved / rejected)
     """
 
-    status = fields.Enum(ApplicationStatus, required=True)
+    status = fields.Enum(
+        ApplicationStatus,
+        by_value=True,
+        required=True,
+    )
 
 
 class CandidateInfo(Schema):

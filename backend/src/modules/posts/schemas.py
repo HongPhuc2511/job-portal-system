@@ -102,6 +102,14 @@ class EmployerInfo(SQLAlchemyAutoSchema):
 
 
 class JobPostResponse(SQLAlchemyAutoSchema):
+    class ApplicationStats(Schema):
+        """Số lượng hồ sơ ứng tuyển của bài đăng (tổng + theo trạng thái)"""
+
+        total = fields.Integer(metadata={"description": "Tổng số hồ sơ đã nộp"})
+        pending = fields.Integer(metadata={"description": "Đang chờ"})
+        approved = fields.Integer(metadata={"description": "Đã duyệt"})
+        rejected = fields.Integer(metadata={"description": "Từ chối"})
+
     class Meta:
         model = JobPost
         sqla_session = db.session
@@ -119,6 +127,21 @@ class JobPostResponse(SQLAlchemyAutoSchema):
 
     province = fields.Nested(ProvinceResponse, dump_only=True)
     district = fields.Nested(DistrictResponse, dump_only=True)
+
+    application_stats = fields.Nested(
+        ApplicationStats,
+        dump_only=True,
+        dump_default={"total": 0, "pending": 0, "approved": 0, "rejected": 0},
+    )
+
+    application_stats = fields.Method("_get_application_stats", dump_only=True)
+
+    @staticmethod
+    def _get_application_stats(obj):
+        stats = getattr(obj, "application_stats", None)
+        if stats is None:
+            return {"total": 0, "pending": 0, "approved": 0, "rejected": 0}
+        return stats
 
 
 class EmployerDashboardResponse(Schema):
