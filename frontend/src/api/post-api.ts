@@ -6,6 +6,7 @@ import {
 import type { InferOutput } from "valibot";
 import type PostSchema from "@/schemas/post-schema";
 import type { Application } from "@/types/application";
+import type { EmployerStats } from "@/types/employer";
 import type { Page } from "@/types/paginate";
 import type { JobPost } from "@/types/post";
 import axiosClient from "./axiosClient";
@@ -110,19 +111,11 @@ export function useGetJobPost(postId: number) {
 	});
 }
 
-export interface EmployerDashboardStats {
-	total_posts: number;
-	active_posts: number;
-	total_applications: number;
-	pending_applications: number;
-}
-
-export function useGetEmployerDashboard(): UseQueryResult<EmployerDashboardStats> {
+export function useGetEmployerStats(): UseQueryResult<EmployerStats> {
 	return useQuery({
 		queryKey: ["employer-dashboard"],
 		queryFn: async () => {
-			const response =
-				await axiosClient.get<EmployerDashboardStats>("/posts/dashboard");
+			const response = await axiosClient.get<EmployerStats>("/posts/dashboard");
 			return response.data;
 		},
 	});

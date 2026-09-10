@@ -1,16 +1,17 @@
+import { cn } from "cn";
 import {
 	BriefcaseIcon,
 	ChevronDownIcon,
 	FilePlusIcon,
-	FileTextIcon,
+	FileStackIcon,
 	FileUserIcon,
 	LogOutIcon,
-	TrendingUpIcon,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth-context";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { ButtonGroup } from "./ui/button-group";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -29,7 +30,13 @@ function Header() {
 					💼 JobPortal
 				</Link>
 
-				<nav className="ml-2 hidden items-center gap-4 text-secondary-foreground text-sm md:flex *:hover:text-foreground">
+				<nav
+					className={cn(
+						"md:flex items-center gap-4",
+						"ml-2 hidden text-secondary-foreground text-sm",
+						"*:hover:text-foreground",
+					)}
+				>
 					<Link to="/">Trang chủ</Link>
 					<Link to="/">Tìm việc làm</Link>
 					<Link to="/">Tuyển dụng</Link>
@@ -51,15 +58,24 @@ function EmployerTooltip() {
 
 	return (
 		<>
-			<Button
-				variant="outline"
-				size="sm"
-				render={<Link to="/posts/create" />}
-				nativeButton={false}
-			>
-				<FilePlusIcon />
-				Tạo bài đăng mới
-			</Button>
+			<ButtonGroup>
+				<Button
+					variant="outline"
+					render={<Link to="/manage-posts/create" />}
+					nativeButton={false}
+				>
+					<FilePlusIcon />
+					Tạo bài đăng mới
+				</Button>
+				<Button
+					variant="outline"
+					render={<Link to="/manage-posts" />}
+					nativeButton={false}
+				>
+					<FileStackIcon />
+					Quản lý bài đăng
+				</Button>
+			</ButtonGroup>
 			<Separator className="ml-1.5 h-6" orientation="vertical" />
 		</>
 	);
@@ -141,18 +157,7 @@ function UserButton() {
 				)}
 
 				{user.role === "employer" && (
-					<>
-						<DropdownMenuGroup>
-							<DropdownMenuItem render={<Link to="/employer/dashboard" />}>
-								<TrendingUpIcon /> Dashboard
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<FileTextIcon />
-								Quản lý bài đăng
-							</DropdownMenuItem>
-						</DropdownMenuGroup>
-						<DropdownMenuSeparator />
-					</>
+					<div className="hidden">Chưa có gì cả</div>
 				)}
 
 				<DropdownMenuGroup>

@@ -6,3 +6,10 @@ export type EmployerPublicProfile = {
 	company_website: string | null;
 	phone: string | null;
 };
+
+export type EmployerStats = {
+	total_posts: number;
+	active_posts: number;
+	total_applications: number;
+	pending_applications: number;
+};

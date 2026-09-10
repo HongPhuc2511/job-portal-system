@@ -68,7 +68,7 @@ export default function PostEditPage() {
 	return (
 		<main className="mx-auto max-w-5xl pt-4">
 			<div className="flex items-center justify-between gap-4 pb-4">
-				<Button variant="outline" render={<Link to="/posts" />}>
+				<Button variant="outline" render={<Link to="/manage-posts" />}>
 					<ChevronLeftIcon />
 					Quay về quản lý bài đăng
 				</Button>
@@ -143,7 +143,7 @@ function PostEditForm({ post }: { post: JobPost }) {
 				type: "success",
 				title: "Cập nhật bài đăng tuyển dụng thành công",
 			});
-			navigate("/posts");
+			navigate("/manage-posts");
 		} catch (rawError) {
 			const error = extractBackendErrors(rawError);
 			setFormErrors(postForm, error);
