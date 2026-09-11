@@ -97,3 +97,11 @@ def send_application_status_email(application: Application) -> None:
         mail.send(msg)
     except Exception as e:
         current_app.logger.error(f"Lời gửi email cap nhat trang thai: {e}")
+
+    # #Hướng dẫn tích hợp email
+    # 1. Tải file requirements.txt
+    # 2. Dô gg bật Xác minh 2 bước
+    # 3. Nếu xác minh rồi th dô App Password tạo và lấy chuỗi 16 ký tự
+    # 4. Vào file .env thêm 2 biến sau
+    # MAIL_USERNAME = email dùng để test
+    # MAIL_PASSWORD = mã 16 ký tự vừa lấy
