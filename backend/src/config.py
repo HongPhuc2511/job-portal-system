@@ -7,13 +7,22 @@ load_dotenv()
 
 class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL",
-        "mysql+pymysql://root:root@localhost:3306/job_portal"
+        "DATABASE_URL", "mysql+pymysql://root:root@localhost:3306/job_portal"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "connect_args": {"ssl": {}},
+    }
+
+
     JWT_SECRET_KEY = os.getenv("SECRET_KEY")
     JWT_ACCESS_TOKEN_EXPIRES = 3600
     JWT_REFRESH_TOKEN_EXPIRES = 86400
+
+    CORS_ALLOWED_ORIGINS = [
+        origin.strip()
+        for origin in (os.getenv("CORS_ORIGINS", "http://localhost:5173")).split(",")
+    ]
 
     UPLOAD_FOLDER = os.path.join(
         os.path.dirname(os.path.dirname(__file__)), "uploads", "resumes"

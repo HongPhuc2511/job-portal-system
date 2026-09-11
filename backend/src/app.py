@@ -1,4 +1,4 @@
-from flask import Flask, app
+from flask import Flask
 from flask_cors import CORS
 
 import src.modules.application.models
@@ -6,7 +6,7 @@ import src.modules.auth.models
 import src.modules.location.models
 import src.modules.resume.models  # noqa: F401
 from src.config import Config
-from src.extensions import api_document, db, jwt, ma, migrate,mail
+from src.extensions import api_document, db, jwt, ma, mail, migrate
 from src.modules.application.routes import applications_bp
 
 from .modules.auth.routes import auth_bp
@@ -19,7 +19,7 @@ def create_app() -> Flask:
     app = Flask(__name__)
     CORS(
         app,
-        resources={r"/api/*": {"origins": "http://localhost:5173"}},
+        resources={r"/api/*": {"origins": Config.CORS_ALLOWED_ORIGINS}},
         supports_credentials=True,
         expose_headers=["X-Pagination"],
     )

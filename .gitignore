@@ -7,9 +7,12 @@ __pycache__/
 .venv/
 backend/venv/
 
+.env.production.yaml
 .env
+.env.production
 backend/.env
 frontend/.env
+gcp-sa-key.json
 
 *.db
 *.sqlite3
