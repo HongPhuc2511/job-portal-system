@@ -38,21 +38,21 @@ A job portal connecting candidates and employers — candidates manage CVs and a
 ##  Getting Started
 
 ### Backend
-\`\`\`bash
+```bash
 cd backend
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 flask db upgrade
 flask run
-\`\`\`
+```
 
 ### Frontend
-\`\`\`bash
+```bash
 cd frontend
 npm install
 npm run dev
-\`\`\`
+```
 
 Add a `.env` file with your database URL and JWT secret keys.
 
